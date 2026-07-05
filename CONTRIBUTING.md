@@ -45,10 +45,12 @@ agentive/
 │   └── index.js                   # CLI entry point
 ├── src/
 │   ├── commands/
-│   │   └── init.js                # Core logic for scaffolding the workspace
-│   ├── templates/                 # The template files copied into user projects
+│   │   └── init.js                # CLI interactive wizard & initialization
+│   ├── templates/                 # The layered template files
+│   │   ├── base/                  # Core templates applied to every project
+│   │   ├── mobile/                # Framework-specific overrides (expo, react-native)
 │   └── utils/
-│       ├── fileSystem.js          # File manipulation utilities
+│       ├── fileSystem.js          # File manipulation & dynamic folder merging
 │       └── compilers.js           # Exporters for Cursor/Claude/Windsurf
 └── package.json                   # Project metadata & scripts
 ```
@@ -63,9 +65,10 @@ agentive/
 Check the [Issues tab](https://github.com/TiPS0/agentive/issues) for any open issues labeled `bug`.
 
 ### ✨ New Agent Commands or Skills
-If you've found a highly effective agent rule or prompt command, you can add it to our default templates:
-1. Add the markdown file to `src/templates/skills/` or `src/templates/commands/`.
-2. Update the corresponding `README.md` in that folder if necessary.
+If you've found a highly effective agent rule or prompt command, you can add it to our templates:
+1. Add generic instructions to `src/templates/base/skills/` or `src/templates/base/commands/`.
+2. Add framework-specific guardrails (e.g., Next.js, Vue) by creating a new folder like `src/templates/web/nextjs/rules/`.
+3. Update the corresponding `init.js` to include the new framework in the interactive prompts.
 
 ### 📝 Documentation Improvements
 Help us improve `README.md` or this contributing guide by fixing typos, clarifying sections, or adding better examples.

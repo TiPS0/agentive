@@ -26,10 +26,10 @@ Stop maintaining separate rule files for every AI tool. **agentive** scaffolds a
 
 | Feature                       | Description                                                          |
 | :---------------------------- | :------------------------------------------------------------------- |
-| 🚀 **Zero Config**            | Run one command and get a fully structured workspace instantly.      |
+| 🚀 **Interactive Setup**    | Select your environment (General, Expo, React Native) to get tailored rules. |
 | 🌍 **Universal**              | Framework-agnostic setup. Works with React, Python, Go, you name it. |
 | 🧠 **Single Source of Truth** | Centralize skills and rules for _all_ your AI agents in one place.   |
-| ⚡ **No Prompts**             | Just run it. No annoying interactive setup wizards to slow you down. |
+| ⚡ **Dynamic Layering**     | Scaffolds base rules and safely merges framework-specific guardrails. |
 
 ---
 
@@ -60,7 +60,7 @@ agentive
 
 ## 🏗 What Happens Under the Hood?
 
-When you run `agentive`, it detects your current directory and instantly scaffolds this structure:
+When you run `agentive`, it launches an interactive wizard asking about your project environment (e.g., General, Mobile > Expo, React Native). It then intelligently scaffolds a tailored workspace:
 
 ```text
 your-project/
@@ -83,6 +83,9 @@ your-project/
 - **`commands/`**: Reusable prompt instructions that agents can execute on demand (e.g. `review.md`).
 - **`skills/`**: Skill definitions that teach agents how to behave in specific roles.
 - **`rules/`**: Project-wide rules that all agents must follow strictly.
+
+### 🌟 Framework-Specific Guardrails
+By selecting a specific framework (like **Expo** or **React Native**), `agentive` overlays expertly crafted rules into your `.agents/` folder. This ensures your AI understands nuances like *Expo Router*, *Native Modules*, or *Unitless Pixels* right out of the box—preventing common hallucinations.
 
 ---
 
