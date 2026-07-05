@@ -47,7 +47,7 @@ agentive/
 │   ├── commands/
 │   │   └── init.js                # CLI interactive wizard & initialization
 │   ├── templates/                 # The layered template files
-│   │   ├── base/                  # Core templates applied to every project
+│   │   ├── base/                  # Core templates applied to every project (AGENTS.md, aiignore)
 │   │   ├── mobile/                # Framework-specific overrides (expo, react-native)
 │   └── utils/
 │       ├── fileSystem.js          # File manipulation & dynamic folder merging

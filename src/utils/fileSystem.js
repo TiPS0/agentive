@@ -136,6 +136,13 @@ async function copyTemplates(templatesDir, agentsDir, projectName, projectType =
     await fs.writeFile(path.join(cwd, 'AGENTS.md'), content, 'utf-8');
   } catch { /* template may not exist */ }
 
+  // 1.5 Copy aiignore from base to project root as .aiignore
+  const aiignoreSrc = path.join(templatesDir, 'base', 'aiignore');
+  try {
+    let content = await fs.readFile(aiignoreSrc, 'utf-8');
+    await fs.writeFile(path.join(cwd, '.aiignore'), content, 'utf-8');
+  } catch { /* template may not exist */ }
+
   const foldersToInclude = ['commands', 'skills', 'rules'];
 
   // Helper to copy a specific template layer

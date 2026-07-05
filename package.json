@@ -1,7 +1,7 @@
 {
   "name": "@p_tipso/agentive",
-  "version": "1.0.2",
-  "description": "A universal, framework-agnostic AI agent repository setup CLI. Scaffold a .agent/ workspace and sync to Cursor, Claude, and Windsurf.",
+  "version": "1.0.3",
+  "description": "A universal, framework-agnostic AI agent repository setup CLI. Scaffold a .agents/ workspace, AGENTS.md, and .aiignore to sync and optimize context for Cursor, Claude, and Windsurf.",
   "license": "MIT",
   "author": "Pakawat Tipso",
   "type": "commonjs",
@@ -27,7 +27,8 @@
     "scaffold",
     "init",
     "rules",
-    "context"
+    "context",
+    "aiignore"
   ],
   "repository": {
     "type": "git",

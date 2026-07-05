@@ -19,6 +19,11 @@ All agent configuration lives inside the `.agents/` directory:
 | `.agents/skills/` | Skill definitions that teach agents how to behave |
 | `.agents/rules/` | Project-wide rules all agents must follow |
 
+## Context Management
+
+When exploring, reading, or searching this repository, you **MUST** respect the exclusion rules defined in `.aiignore`. 
+Additionally, you must also read and respect any rules defined in `.gitignore`, `.cursorignore`, or `.aiexclude` if they exist in the repository to prevent context pollution and save token usage.
+
 ## Getting Started
 
 1. Edit the markdown files inside `.agents/` to customise agent behaviour

@@ -57,7 +57,7 @@ async function runInit() {
       name: 'framework',
       message: 'Which framework are you using?',
       choices: [
-        { title: 'Expo', value: 'expo' },
+        { title: 'Expo (Recommended)', value: 'expo' },
         { title: 'React Native', value: 'react-native' },
       ],
       initial: 0,
@@ -88,6 +88,7 @@ async function runInit() {
   });
 
   console.log(chalk.green('  ✔ ') + chalk.white('Created ') + chalk.cyan('AGENTS.md'));
+  console.log(chalk.green('  ✔ ') + chalk.white('Created ') + chalk.cyan('.aiignore'));
   console.log(chalk.green('  ✔ ') + chalk.white('Scaffolded ') + chalk.cyan('.agents/') + chalk.white(' workspace'));
 
   // --- Done ---
@@ -97,6 +98,7 @@ async function runInit() {
   console.log(chalk.white('  Your AI workspace is ready:'));
   console.log('');
   console.log(chalk.gray('    AGENTS.md                       ← root agent instructions'));
+  console.log(chalk.gray('    .aiignore                       ← hides files from AI to save tokens'));
   console.log(chalk.gray('    .agents/'));
   console.log(chalk.gray('    ├── settings.json               ← project config'));
   console.log(chalk.gray('    ├── settings.local.json         ← local overrides (gitignored)'));

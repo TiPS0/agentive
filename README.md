@@ -20,7 +20,7 @@
 
 ---
 
-Stop maintaining separate rule files for every AI tool. **agentive** scaffolds a universal `.agents/` directory and an `AGENTS.md` file in your project — providing a **single source of truth** for all your agent commands, skills, and rules.
+Stop maintaining separate rule files for every AI tool. **agentive** scaffolds a universal `.agents/` directory, an `AGENTS.md` file, and an `.aiignore` file in your project — providing a **single source of truth** for all your agent commands, skills, and rules, while significantly saving token usage.
 
 ## ✨ Why Agentive?
 
@@ -65,6 +65,7 @@ When you run `agentive`, it launches an interactive wizard asking about your pro
 ```text
 your-project/
 ├── AGENTS.md                      ← Root agent instructions
+├── .aiignore                      ← Hides irrelevant files from AI to save tokens
 ├── .agents/
 │   ├── settings.json              ← Project config
 │   ├── settings.local.json        ← Local machine overrides (auto-gitignored)
@@ -78,8 +79,9 @@ your-project/
 │       └── README.md              ← Guide: how to add rules
 ```
 
-### 📂 Folder Guide
+### 📂 File & Folder Guide
 
+- **`.aiignore`**: Prevents context pollution and saves tokens by hiding files (like `node_modules` or build outputs) from your AI agents.
 - **`commands/`**: Reusable prompt instructions that agents can execute on demand (e.g. `review.md`).
 - **`skills/`**: Skill definitions that teach agents how to behave in specific roles.
 - **`rules/`**: Project-wide rules that all agents must follow strictly.
