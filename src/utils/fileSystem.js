@@ -72,6 +72,8 @@ async function writeSettings(agentsDir, settings) {
   // settings.json — committed to git
   const settingsJson = {
     projectName:      settings.projectName,
+    projectType:      settings.projectType || 'general',
+    framework:        settings.framework || null,
     agentiveVersion:  settings.agentiveVersion,
     createdAt:        settings.createdAt,
   };
@@ -120,31 +122,42 @@ async function writeSettings(agentsDir, settings) {
  * @param {string} templatesDir - Absolute path to src/templates/
  * @param {string} agentsDir    - Absolute path to .agents/
  * @param {string} projectName  - The user's project name
+ * @param {string} projectType  - e.g., 'general', 'web', 'mobile'
+ * @param {string} framework    - e.g., 'expo', 'react-native'
  */
-async function copyTemplates(templatesDir, agentsDir, projectName) {
+async function copyTemplates(templatesDir, agentsDir, projectName, projectType = 'general', framework = null) {
   const cwd = path.dirname(agentsDir);
 
-  // Copy AGENTS.md to project root
-  const agentMdSrc = path.join(templatesDir, 'AGENTS.md');
+  // 1. Copy AGENTS.md from base to project root
+  const agentMdSrc = path.join(templatesDir, 'base', 'AGENTS.md');
   try {
     let content = await fs.readFile(agentMdSrc, 'utf-8');
     content = replacePlaceholders(content, projectName);
     await fs.writeFile(path.join(cwd, 'AGENTS.md'), content, 'utf-8');
   } catch { /* template may not exist */ }
 
-  // Copy folder templates into .agents/
   const foldersToInclude = ['commands', 'skills', 'rules'];
-  for (const folder of foldersToInclude) {
-    const srcFolder = path.join(templatesDir, folder);
-    const destFolder = path.join(agentsDir, folder);
 
-    try {
-      await fs.access(srcFolder);
-    } catch {
-      continue;
+  // Helper to copy a specific template layer
+  const copyLayer = async (layerPath) => {
+    for (const folder of foldersToInclude) {
+      const srcFolder = path.join(layerPath, folder);
+      const destFolder = path.join(agentsDir, folder);
+      try {
+        await fs.access(srcFolder);
+        await copyDirectoryRecursive(srcFolder, destFolder, projectName);
+      } catch {
+        continue;
+      }
     }
+  };
 
-    await copyDirectoryRecursive(srcFolder, destFolder, projectName);
+  // 2. Copy Base Layer
+  await copyLayer(path.join(templatesDir, 'base'));
+
+  // 3. Copy Framework Layer (if applicable)
+  if (projectType !== 'general' && framework) {
+    await copyLayer(path.join(templatesDir, projectType, framework));
   }
 }
 

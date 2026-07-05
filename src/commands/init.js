@@ -2,6 +2,7 @@
 
 const path = require('path');
 const chalk = require('chalk');
+const prompts = require('prompts');
 const { version } = require('../../package.json');
 const {
   createAgentDirectory,
@@ -31,14 +32,57 @@ async function runInit() {
   console.log(chalk.gray('  Installing to: ') + chalk.white(cwd));
   console.log('');
 
+  // --- Prompt User for Project Type ---
+  const typeResponse = await prompts({
+    type: 'select',
+    name: 'projectType',
+    message: 'What type of project are you building?',
+    choices: [
+      { title: 'General / Universal', value: 'general' },
+      { title: 'Web Development', value: 'web', disabled: true },
+      { title: 'Mobile Development', value: 'mobile' },
+    ],
+    initial: 0,
+  });
+
+  if (!typeResponse.projectType) {
+    console.log(chalk.red('  ✖ ') + 'Setup cancelled.');
+    process.exit(1);
+  }
+
+  let framework = null;
+  if (typeResponse.projectType === 'mobile') {
+    const fwResponse = await prompts({
+      type: 'select',
+      name: 'framework',
+      message: 'Which framework are you using?',
+      choices: [
+        { title: 'Expo', value: 'expo' },
+        { title: 'React Native', value: 'react-native' },
+      ],
+      initial: 0,
+    });
+    
+    if (!fwResponse.framework) {
+      console.log(chalk.red('  ✖ ') + 'Setup cancelled.');
+      process.exit(1);
+    }
+    framework = fwResponse.framework;
+  }
+
+  const projectType = typeResponse.projectType;
+  console.log('');
+
   // --- Scaffold .agents/ directory ---
   const templatesDir = path.join(__dirname, '..', 'templates');
   const agentsDir = await createAgentDirectory(cwd, false);
-  await copyTemplates(templatesDir, agentsDir, projectName);
+  await copyTemplates(templatesDir, agentsDir, projectName, projectType, framework);
 
   // --- Write settings.json and settings.local.json ---
   await writeSettings(agentsDir, {
     projectName,
+    projectType,
+    framework,
     agentiveVersion: version,
     createdAt: new Date().toISOString(),
   });
