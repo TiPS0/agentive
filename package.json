@@ -1,0 +1,49 @@
+{
+  "name": "@p_tipso/agentive",
+  "version": "1.0.1",
+  "description": "A universal, framework-agnostic AI agent repository setup CLI. Scaffold a .agent/ workspace and sync to Cursor, Claude, and Windsurf.",
+  "license": "MIT",
+  "author": "Pakawat Tipso",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18"
+  },
+  "bin": {
+    "agentive": "bin/index.js"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "ai",
+    "agent",
+    "cli",
+    "cursor",
+    "claude",
+    "windsurf",
+    "scaffold",
+    "init",
+    "rules",
+    "context"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TiPS0/agentive.git"
+  },
+  "homepage": "https://github.com/TiPS0/agentive",
+  "bugs": {
+    "url": "https://github.com/TiPS0/agentive/issues"
+  },
+  "scripts": {
+    "prepare": "node -e \"console.log('agentive ready.')\"",
+    "test": "node bin/index.js --version"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "commander": "^12.1.0",
+    "prompts": "^2.4.2"
+  }
+}
