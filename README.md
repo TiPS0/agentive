@@ -1,158 +1,111 @@
 <div align="center">
 
-# 🤖 agentive
+# Agentive
 
 **A universal, framework-agnostic AI agent workspace CLI.**
 
-[![npm version](https://img.shields.io/npm/v/@p_tipso/agentive.svg?style=flat-square)](https://www.npmjs.com/package/@p_tipso/agentive)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
-[![Node.js](https://img.shields.io/badge/node-%3E%3D18-brightgreen?style=flat-square)](https://nodejs.org)
+<p align="center">
+  <a href="https://www.npmjs.com/package/@p_tipso/agentive"><img src="https://img.shields.io/npm/v/@p_tipso/agentive?style=for-the-badge&color=blue" alt="npm version"></a>
+  <a href="https://nodejs.org"><img src="https://img.shields.io/badge/node-%3E%3D18-brightgreen?style=for-the-badge&logo=nodedotjs" alt="Node.js"></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge" alt="License: MIT"></a>
+</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/@p_tipso/agentive"><img src="https://img.shields.io/npm/dm/@p_tipso/agentive?style=flat-square&label=downloads" alt="npm downloads"></a>
+  <a href="https://github.com/TiPS0/agentive/stargazers"><img src="https://img.shields.io/github/stars/TiPS0/agentive?style=flat-square&logo=github" alt="GitHub stars"></a>
+  <a href="https://github.com/TiPS0/agentive/issues"><img src="https://img.shields.io/github/issues/TiPS0/agentive?style=flat-square" alt="GitHub issues"></a>
+</p>
 
 </div>
 
 ---
 
-Stop maintaining separate rule files for every AI tool. **agentive** scaffolds a universal `.agents/` directory and an `AGENTS.md` file in your project — your single source of truth for agent commands, skills, and rules.
+Stop maintaining separate rule files for every AI tool. **agentive** scaffolds a universal `.agents/` directory and an `AGENTS.md` file in your project — providing a **single source of truth** for all your agent commands, skills, and rules.
 
-## ✨ What it does
+## ✨ Why Agentive?
 
-Run one command, get a fully structured AI agent workspace:
+| Feature                       | Description                                                          |
+| :---------------------------- | :------------------------------------------------------------------- |
+| 🚀 **Zero Config**            | Run one command and get a fully structured workspace instantly.      |
+| 🌍 **Universal**              | Framework-agnostic setup. Works with React, Python, Go, you name it. |
+| 🧠 **Single Source of Truth** | Centralize skills and rules for _all_ your AI agents in one place.   |
+| ⚡ **No Prompts**             | Just run it. No annoying interactive setup wizards to slow you down. |
+
+---
+
+## 📦 Installation & Usage
+
+Run one command, get a fully structured AI agent workspace instantly:
 
 ```bash
 npx @p_tipso/agentive
 ```
 
-No prompts. No config. Just run it and it scaffolds everything instantly into the folder your terminal is currently in.
-
-### What happens when you run it
-
-1. Detects your current directory and project name
-2. Creates an `AGENTS.md` file at your project root (top-level agent instructions)
-3. Creates a `.agents/` folder with the full workspace structure:
-   - `settings.json` — project config (committed to git)
-   - `settings.local.json` — local machine overrides (auto-gitignored)
-   - `commands/` — reusable prompt commands (e.g. code review, fix errors)
-   - `skills/` — skill definitions for agent roles
-   - `rules/` — project-wide rules all agents must follow
-4. If `.agents/` already exists, it skips to avoid overwriting your customisations
-
----
-
-## 📁 Output Structure
-
-```
-your-project/
-├── AGENTS.md                      ← root agent instructions
-├── .agents/
-│   ├── settings.json              ← project config
-│   ├── settings.local.json        ← local overrides (auto-gitignored)
-│   ├── commands/
-│   │   ├── README.md              ← guide: how to add commands
-│   │   ├── review.md              ← code review command
-│   │   └── fix-issue.md           ← zero-error fix command
-│   ├── skills/
-│   │   └── README.md              ← guide: how to add skills
-│   └── rules/
-│       └── README.md              ← guide: how to add rules
-```
-
-### `settings.json`
-
-```json
-{
-  "projectName": "my-app",
-  "agentiveVersion": "1.1.0",
-  "createdAt": "2026-07-05T12:00:00.000Z"
-}
-```
-
----
-
-## 🏗 Package Architecture
-
-This is the source code structure of the `agentive` npm package itself:
-
-```
-agentive/
-├── bin/
-│   └── index.js                   ← CLI entry point (shebang + commander)
-├── src/
-│   ├── commands/
-│   │   └── init.js                ← scaffolding logic (no prompts, auto-install)
-│   ├── templates/                 ← files copied into the user's project
-│   │   ├── AGENTS.md              ← → copied to project root
-│   │   ├── commands/
-│   │   │   ├── README.md
-│   │   │   ├── review.md
-│   │   │   └── fix-issue.md
-│   │   ├── skills/
-│   │   │   └── README.md
-│   │   └── rules/
-│   │       └── README.md
-│   └── utils/
-│       ├── fileSystem.js          ← async fs helpers, directory creation, settings
-│       └── compilers.js           ← sync to Cursor / Claude / Windsurf formats
-├── .github/
-│   └── workflows/
-│       └── publish.yml            ← auto-publish to npm on git tag push
-├── .gitignore
-├── LICENSE
-├── README.md
-└── package.json
-```
-
----
-
-## 📂 Folder Guide
-
-### Commands (`commands/`)
-
-Reusable prompt instructions that agents can execute on demand.
-
-| File | Purpose |
-|------|---------|
-| `review.md` | Structured code review for bugs, performance, and security |
-| `fix-issue.md` | Diagnose and fix errors with zero tolerance |
-
-### Skills (`skills/`)
-
-Skill definitions that teach agents how to behave in specific roles. Add `.md` files to define new capabilities.
-
-### Rules (`rules/`)
-
-Project-wide rules that all agents must follow. Add `.md` files for coding standards, architecture rules, etc.
-
----
-
-## 📦 Commands
-
-| Command | Description |
-|---|---|
-| `npx @p_tipso/agentive` | Scaffold `.agents/` workspace instantly |
-| `npx @p_tipso/agentive --version` | Print the current version |
-| `npx @p_tipso/agentive --help` | Show available commands |
-
----
-
-## 🛠 Install Globally (optional)
+If you prefer to install it globally for frequent usage:
 
 ```bash
 npm install -g @p_tipso/agentive
 agentive
 ```
 
+### CLI Commands
+
+| Command                           | Description                                                  |
+| :-------------------------------- | :----------------------------------------------------------- |
+| `npx @p_tipso/agentive`           | Scaffold `.agents/` workspace instantly in current directory |
+| `npx @p_tipso/agentive --version` | Print the current CLI version                                |
+| `npx @p_tipso/agentive --help`    | Show available commands and options                          |
+
+---
+
+## 🏗 What Happens Under the Hood?
+
+When you run `agentive`, it detects your current directory and instantly scaffolds this structure:
+
+```text
+your-project/
+├── AGENTS.md                      ← Root agent instructions
+├── .agents/
+│   ├── settings.json              ← Project config
+│   ├── settings.local.json        ← Local machine overrides (auto-gitignored)
+│   ├── commands/
+│   │   ├── README.md              ← Guide: how to add commands
+│   │   ├── review.md              ← Example code review command
+│   │   └── fix-issue.md           ← Example zero-error fix command
+│   ├── skills/
+│   │   └── README.md              ← Guide: how to add skills
+│   └── rules/
+│       └── README.md              ← Guide: how to add rules
+```
+
+### 📂 Folder Guide
+
+- **`commands/`**: Reusable prompt instructions that agents can execute on demand (e.g. `review.md`).
+- **`skills/`**: Skill definitions that teach agents how to behave in specific roles.
+- **`rules/`**: Project-wide rules that all agents must follow strictly.
+
 ---
 
 ## 🤝 Contributing
 
-1. Fork the repo: [github.com/TiPS0/agentive](https://github.com/TiPS0/agentive)
-2. Clone your fork
-3. `npm install`
-4. `npm link` (to use `agentive` locally while developing)
-5. Make your changes and open a pull request!
+We love contributions! Whether it's adding new built-in skills, fixing bugs, or improving documentation, your help is appreciated.
+
+Please read our [Contributing Guide](CONTRIBUTING.md) to get started with setting up your local environment and submitting a Pull Request.
+
+---
+
+## ⭐ Star History
+
+<a href="https://star-history.com/#TiPS0/agentive&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=TiPS0/agentive&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=TiPS0/agentive&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=TiPS0/agentive&type=Date" />
+ </picture>
+</a>
 
 ---
 
 ## 📄 License
 
-MIT © [Pakawat Tipso](https://github.com/TiPS0)
+This project is licensed under the [MIT License](./LICENSE).
