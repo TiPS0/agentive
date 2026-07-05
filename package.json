@@ -1,6 +1,6 @@
 {
   "name": "@p_tipso/agentive",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "A universal, framework-agnostic AI agent repository setup CLI. Scaffold a .agents/ workspace, AGENTS.md, and .aiignore to sync and optimize context for Cursor, Claude, and Windsurf.",
   "license": "MIT",
   "author": "Pakawat Tipso",

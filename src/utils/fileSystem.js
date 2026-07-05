@@ -203,10 +203,104 @@ async function copyDirectoryRecursive(src, dest, projectName) {
     }
   }
 }
+// ─── Package Manager Utilities ────────────────────────────────────────────────
+
+/**
+ * Read the settings.json file.
+ */
+async function readSettings(agentsDir) {
+  try {
+    const content = await fs.readFile(path.join(agentsDir, 'settings.json'), 'utf-8');
+    return JSON.parse(content);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Update the settings.json file.
+ */
+async function updateSettings(agentsDir, newSettings) {
+  await fs.writeFile(
+    path.join(agentsDir, 'settings.json'),
+    JSON.stringify(newSettings, null, 2) + '\n',
+    'utf-8'
+  );
+}
+
+/**
+ * Add a dependency to settings.json
+ */
+async function addDependency(agentsDir, packageName, version, type = 'skill') {
+  const settings = await readSettings(agentsDir);
+  if (!settings) return false;
+  if (!settings.dependencies) settings.dependencies = {};
+  settings.dependencies[packageName] = { version, type };
+  await updateSettings(agentsDir, settings);
+  return true;
+}
+
+/**
+ * Remove a dependency from settings.json
+ */
+async function removeDependency(agentsDir, packageName) {
+  const settings = await readSettings(agentsDir);
+  if (!settings) return false;
+  if (settings.dependencies && settings.dependencies[packageName]) {
+    delete settings.dependencies[packageName];
+    await updateSettings(agentsDir, settings);
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Link a downloaded agent file into AGENTS.md
+ */
+async function linkAgentFile(cwd, relativePath, title) {
+  const agentMdPath = path.join(cwd, 'AGENTS.md');
+  try {
+    let content = await fs.readFile(agentMdPath, 'utf-8');
+    const linkStr = `- [${title}](${relativePath})`;
+    if (!content.includes(linkStr)) {
+      content += `\n${linkStr}\n`;
+      await fs.writeFile(agentMdPath, content, 'utf-8');
+    }
+  } catch (err) {
+    // AGENTS.md might not exist
+  }
+}
+
+/**
+ * Unlink a removed agent file from AGENTS.md
+ */
+async function unlinkAgentFile(cwd, relativePath, title) {
+  const agentMdPath = path.join(cwd, 'AGENTS.md');
+  try {
+    let content = await fs.readFile(agentMdPath, 'utf-8');
+    const linkStr = `- [${title}](${relativePath})`;
+    if (content.includes(linkStr)) {
+      content = content.replace(new RegExp(`\\n?${escapeRegex(linkStr)}\\n?`, 'g'), '\n');
+      await fs.writeFile(agentMdPath, content, 'utf-8');
+    }
+  } catch (err) {
+    // AGENTS.md might not exist
+  }
+}
+
+function escapeRegex(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
 
 module.exports = {
   agentDirectoryExists,
   createAgentDirectory,
   writeSettings,
   copyTemplates,
+  readSettings,
+  updateSettings,
+  addDependency,
+  removeDependency,
+  linkAgentFile,
+  unlinkAgentFile,
 };

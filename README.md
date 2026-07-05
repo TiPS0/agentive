@@ -52,7 +52,9 @@ agentive
 
 | Command                           | Description                                                  |
 | :-------------------------------- | :----------------------------------------------------------- |
-| `npx @p_tipso/agentive`           | Scaffold `.agents/` workspace instantly in current directory |
+| `npx @p_tipso/agentive init`      | Scaffold `.agents/` workspace instantly in current directory |
+| `npx @p_tipso/agentive install <pkg>`| Install an agent skill or rule from the registry (alias: `add`) |
+| `npx @p_tipso/agentive remove <pkg>` | Remove an installed skill or rule (alias: `rm`)              |
 | `npx @p_tipso/agentive --version` | Print the current CLI version                                |
 | `npx @p_tipso/agentive --help`    | Show available commands and options                          |
 

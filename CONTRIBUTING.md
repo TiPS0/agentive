@@ -45,7 +45,9 @@ agentive/
 │   └── index.js                   # CLI entry point
 ├── src/
 │   ├── commands/
-│   │   └── init.js                # CLI interactive wizard & initialization
+│   │   ├── init.js                # CLI interactive wizard & initialization
+│   │   ├── install.js             # Package manager (install skills/rules)
+│   │   └── remove.js              # Package manager (remove skills/rules)
 │   ├── templates/                 # The layered template files
 │   │   ├── base/                  # Core templates applied to every project (AGENTS.md, aiignore)
 │   │   ├── mobile/                # Framework-specific overrides (expo, react-native)
