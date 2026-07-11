@@ -4,26 +4,51 @@ This folder contains **skill definitions** — instructions that teach AI agents
 
 ## How to use
 
-Each `.md` file in this directory defines a skill. The agent will adopt the role described in the skill file when activated.
+Each skill lives in its **own subfolder**, named after the skill. The folder must contain a `SKILL.md` file as its entry point.
 
-## Structure
+```
+.agents/skills/
+├── route-groups-setup/
+│   └── SKILL.md
+├── create-expo-app/
+│   └── SKILL.md
+└── my-custom-skill/
+    └── SKILL.md
+```
 
-Each skill file should include:
+IDE and CLI tools that support slash-commands will autocomplete the folder name, then load the `SKILL.md` inside it (e.g., typing `/route-groups-setup` activates that skill).
 
-- **Role description:** What the agent does in this role
-- **Responsibilities:** Specific tasks the agent handles
-- **Inputs / Outputs:** What the agent expects and what it produces
-- **Constraints:** Boundaries the agent must respect
+## SKILL.md Structure
 
-## Examples of skills you could add
+Each `SKILL.md` file must include a YAML frontmatter block at the top:
 
-| File | Purpose |
+```markdown
+---
+name: my-skill-name
+description: A short description of what this skill does.
+version: 1.0.0
+---
+
+# Skill instructions go here...
+```
+
+- **`name`** and **`description`** are required — they are used for skill discovery and autocomplete matching.
+- The body (below the frontmatter) contains the actual instructions the agent follows when the skill is activated.
+
+## Skill Folder Layout
+
+A skill folder can include optional subdirectories for more complex skills:
+
+| Path | Purpose |
 |------|---------|
-| `web-browser.md` | How agents should browse the web and retrieve data |
-| `data-extractor.md` | How agents should extract structured data from raw content |
-| `code-writer.md` | How agents should write new code following project conventions |
-| `tester.md` | How agents should write and run tests |
+| `SKILL.md` | *(Required)* Main instructions with YAML frontmatter |
+| `scripts/` | Helper scripts the agent can run |
+| `examples/` | Reference implementations or usage patterns |
+| `resources/` | Templates, assets, or additional files |
+| `references/` | Extra documentation the agent can read on demand |
 
 ## Adding new skills
 
-Create a new `.md` file in this folder. Name it after the role (e.g., `api-designer.md`, `database-manager.md`).
+1. Create a new folder under `.agents/skills/` named after your skill (e.g., `api-designer/`)
+2. Add a `SKILL.md` file inside it with the required frontmatter
+3. Describe the agent's role, responsibilities, and constraints in the body

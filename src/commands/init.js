@@ -39,7 +39,7 @@ async function runInit() {
     message: 'What type of project are you building?',
     choices: [
       { title: 'General / Universal', value: 'general' },
-      { title: 'Web Development', value: 'web', disabled: true },
+      { title: 'Web Development', value: 'web' },
       { title: 'Mobile Development', value: 'mobile' },
     ],
     initial: 0,
@@ -51,18 +51,35 @@ async function runInit() {
   }
 
   let framework = null;
-  if (typeResponse.projectType === 'mobile') {
+  if (typeResponse.projectType === 'web') {
+    const fwResponse = await prompts({
+      type: 'select',
+      name: 'framework',
+      message: 'Which framework are you using?',
+      choices: [
+        { title: 'Next.js', value: 'nextjs' },
+        { title: 'Nuxt', value: 'nuxt' },
+      ],
+      initial: 0,
+    });
+
+    if (!fwResponse.framework) {
+      console.log(chalk.red('  ✖ ') + 'Setup cancelled.');
+      process.exit(1);
+    }
+    framework = fwResponse.framework;
+  } else if (typeResponse.projectType === 'mobile') {
     const fwResponse = await prompts({
       type: 'select',
       name: 'framework',
       message: 'Which framework are you using?',
       choices: [
         { title: 'Expo (Recommended)', value: 'expo' },
-        { title: 'React Native', value: 'react-native' },
+        { title: 'React Native', value: 'react-native', disabled: true },
       ],
       initial: 0,
     });
-    
+
     if (!fwResponse.framework) {
       console.log(chalk.red('  ✖ ') + 'Setup cancelled.');
       process.exit(1);
