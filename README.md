@@ -24,12 +24,12 @@ Stop maintaining separate rule files for every AI tool. **agentive** scaffolds a
 
 ## ✨ Why Agentive?
 
-| Feature                       | Description                                                          |
-| :---------------------------- | :------------------------------------------------------------------- |
-| 🚀 **Interactive Setup**    | Select your environment (General, Expo, React Native) to get tailored rules. |
-| 🌍 **Universal**              | Framework-agnostic setup. Works with React, Python, Go, you name it. |
-| 🧠 **Single Source of Truth** | Centralize skills and rules for _all_ your AI agents in one place.   |
-| ⚡ **Dynamic Layering**     | Scaffolds base rules and safely merges framework-specific guardrails. |
+| Feature                       | Description                                                                  |
+| :---------------------------- | :--------------------------------------------------------------------------- |
+| 🚀 **Interactive Setup**      | Select your environment (General, Expo, React Native) to get tailored rules. |
+| 🌍 **Universal**              | Framework-agnostic setup. Works with React, Python, Go, you name it.         |
+| 🧠 **Single Source of Truth** | Centralize skills and rules for _all_ your AI agents in one place.           |
+| ⚡ **Dynamic Layering**       | Scaffolds base rules and safely merges framework-specific guardrails.        |
 
 ---
 
@@ -50,13 +50,13 @@ agentive
 
 ### CLI Commands
 
-| Command                           | Description                                                  |
-| :-------------------------------- | :----------------------------------------------------------- |
-| `npx @p_tipso/agentive init`      | Scaffold `.agents/` workspace instantly in current directory |
-| `npx @p_tipso/agentive install <pkg>`| Install an agent skill or rule from the registry (alias: `add`) |
-| `npx @p_tipso/agentive remove <pkg>` | Remove an installed skill or rule (alias: `rm`)              |
-| `npx @p_tipso/agentive --version` | Print the current CLI version                                |
-| `npx @p_tipso/agentive --help`    | Show available commands and options                          |
+| Command                               | Description                                                     |
+| :------------------------------------ | :-------------------------------------------------------------- |
+| `npx @p_tipso/agentive init`          | Scaffold `.agents/` workspace instantly in current directory    |
+| `npx @p_tipso/agentive install <pkg>` | Install an agent skill or rule from the registry (alias: `add`) |
+| `npx @p_tipso/agentive remove <pkg>`  | Remove an installed skill or rule (alias: `rm`)                 |
+| `npx @p_tipso/agentive --version`     | Print the current CLI version                                   |
+| `npx @p_tipso/agentive --help`        | Show available commands and options                             |
 
 ---
 
@@ -89,7 +89,8 @@ your-project/
 - **`rules/`**: Project-wide rules that all agents must follow strictly.
 
 ### 🌟 Framework-Specific Guardrails
-By selecting a specific framework (like **Expo** or **React Native**), `agentive` overlays expertly crafted rules into your `.agents/` folder. This ensures your AI understands nuances like *Expo Router*, *Native Modules*, or *Unitless Pixels* right out of the box—preventing common hallucinations.
+
+By selecting a specific framework (like **Expo** or **React Native**), `agentive` overlays expertly crafted rules into your `.agents/` folder. This ensures your AI understands nuances like _Expo Router_, _Native Modules_, or _Unitless Pixels_ right out of the box—preventing common hallucinations.
 
 ---
 
@@ -99,12 +100,11 @@ We love contributions! Whether it's adding new built-in skills, fixing bugs, or 
 
 Please read our [Contributing Guide](CONTRIBUTING.md) to get started with setting up your local environment and submitting a Pull Request.
 
-
 ---
 
 ## ⭐ Star History
 
-[![Star History Chart](https://raw.githubusercontent.com/TiPS0/agentive/star-tracker/star-tracker.svg)](https://star-history.com/#TiPS0/agentive&Date)
+[![Star History Chart](https://raw.githubusercontent.com/TiPS0/agentive/star-tracker-data/charts/star-history.svg)](https://star-history.com/#TiPS0/agentive&Date)
 
 ---
 
