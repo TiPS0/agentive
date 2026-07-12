@@ -17,4 +17,4 @@ jobs:
         with:
           # You must create a Personal Access Token (classic) with 'repo' scope
           # and save it as a repository secret named STAR_TRACKER_TOKEN.
-          token: ${{ secrets.STAR_TRACKER_TOKEN }}
+          github-token: ${{ secrets.STAR_TRACKER_TOKEN }}
