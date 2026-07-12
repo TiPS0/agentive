@@ -35,11 +35,15 @@ Stop maintaining separate rule files for every AI tool. **agentive** scaffolds a
 
 ## 📦 Installation & Usage
 
-Run one command, get a fully structured AI agent workspace instantly:
+Run one command to get a fully structured AI agent workspace instantly. 
+**Note for Users:** Always append `@latest` to ensure `npx` downloads the newest public release from the npm registry, avoiding any locally cached versions:
 
 ```bash
-npx @p_tipso/agentive
+npx @p_tipso/agentive@latest
 ```
+
+> **Note for Contributors:** If you are testing this package locally (e.g., via `npm link`), simply run `npx @p_tipso/agentive` (without `@latest`) to execute your local codebase.
+
 
 If you prefer to install it globally for frequent usage:
 

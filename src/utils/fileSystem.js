@@ -42,8 +42,6 @@ async function createAgentDirectory(cwd, overwrite = false) {
 
   if (overwrite) {
     await fs.rm(agentsDir, { recursive: true, force: true });
-    // Also remove old AGENTS.md if overwriting
-    try { await fs.rm(path.join(cwd, 'AGENTS.md'), { force: true }); } catch { /* noop */ }
   }
 
   await fs.mkdir(agentsDir, { recursive: true });
@@ -130,10 +128,21 @@ async function copyTemplates(templatesDir, agentsDir, projectName, projectType =
 
   // 1. Copy AGENTS.md from base to project root
   const agentMdSrc = path.join(templatesDir, 'base', 'AGENTS.md');
+  const targetAgentMdPath = path.join(cwd, 'AGENTS.md');
   try {
     let content = await fs.readFile(agentMdSrc, 'utf-8');
     content = replacePlaceholders(content, projectName);
-    await fs.writeFile(path.join(cwd, 'AGENTS.md'), content, 'utf-8');
+    
+    let finalContent = content;
+    try {
+      const existingContent = await fs.readFile(targetAgentMdPath, 'utf-8');
+      if (existingContent.trim()) {
+        // Prepend the new template content to the existing content
+        finalContent = content + '\n\n' + existingContent;
+      }
+    } catch { /* target may not exist, that's fine */ }
+
+    await fs.writeFile(targetAgentMdPath, finalContent, 'utf-8');
   } catch { /* template may not exist */ }
 
   // 1.5 Copy aiignore from base to project root as .aiignore
