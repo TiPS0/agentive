@@ -1,0 +1,20 @@
+name: Generate Star History
+on:
+  schedule:
+    - cron: "0 2 * * *" # Runs every day at 02:00 UTC
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Generate Star History Chart
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Generate Star History
+        uses: fbuireu/github-star-tracker@v1
+        with:
+          # You must create a Personal Access Token (classic) with 'repo' scope
+          # and save it as a repository secret named STAR_TRACKER_TOKEN.
+          token: ${{ secrets.STAR_TRACKER_TOKEN }}

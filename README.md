@@ -99,11 +99,12 @@ We love contributions! Whether it's adding new built-in skills, fixing bugs, or 
 
 Please read our [Contributing Guide](CONTRIBUTING.md) to get started with setting up your local environment and submitting a Pull Request.
 
+
 ---
 
 ## ⭐ Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=TiPS0/agentive&type=Date)](https://star-history.com/#TiPS0/agentive&Date)
+[![Star History Chart](https://raw.githubusercontent.com/TiPS0/agentive/star-tracker/star-tracker.svg)](https://star-history.com/#TiPS0/agentive&Date)
 
 ---
 
