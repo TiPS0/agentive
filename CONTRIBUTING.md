@@ -19,10 +19,12 @@ This guide will help you get started quickly.
 ## Getting Started
 
 ### Prerequisites
+
 - **Node.js** 18+ and **npm**
 - **Git**
 
 ### Fork & Clone
+
 ```bash
 # 1. Fork the repo on GitHub, then clone your fork
 git clone https://github.com/YOUR_USERNAME/agentive.git
@@ -57,26 +59,31 @@ agentive/
 └── package.json                   # Project metadata & scripts
 ```
 
-> **Important:** When adding new built-in skills or commands for users, make sure you modify the files inside `src/templates/`! 
+> **Important:** When adding new built-in skills or commands for users, make sure you modify the files inside `src/templates/`!
 
 ---
 
 ## Ways to Contribute
 
 ### 🐛 Bug Fixes
+
 Check the [Issues tab](https://github.com/TiPS0/agentive/issues) for any open issues labeled `bug`.
 
 ### ✨ New Agent Commands or Skills
+
 If you've found a highly effective agent rule or prompt command, you can add it to our templates:
+
 1. Add generic instructions to `src/templates/base/skills/` or `src/templates/base/commands/`.
 2. Add framework-specific guardrails (e.g., Next.js, Vue) by creating a new folder like `src/templates/web/nextjs/rules/`.
 3. Update the corresponding `init.js` to include the new framework in the interactive prompts.
 
 ### 📝 Documentation Improvements
+
 Help us improve `README.md` or this contributing guide by fixing typos, clarifying sections, or adding better examples.
 
 ### 🔧 CLI Improvements
-Improvements to the core CLI logic (`src/commands/init.js` or `src/utils/`). 
+
+Improvements to the core CLI logic (`src/commands/init.js` or `src/utils/`).
 
 ---
 
@@ -100,6 +107,7 @@ git push -u origin feat/your-feature-name
 ---
 
 ## Commit Message Format
+
 We follow [Conventional Commits](https://www.conventionalcommits.org/):
 
 ```text
@@ -114,6 +122,7 @@ Types:
 ```
 
 **Examples:**
+
 ```text
 feat: add comprehensive react component skill template
 fix: resolve pathing issue on windows environments
@@ -123,6 +132,7 @@ docs: improve installation instructions in README
 ---
 
 ## Pull Request Guidelines
+
 1. **One PR per change** — keep PRs focused and small.
 2. **Fill out the PR description** — describe what you changed and why.
 3. **Never push directly to `main`** — always use a feature branch.
@@ -130,8 +140,29 @@ docs: improve installation instructions in README
 
 ---
 
+## Releasing (For Maintainers)
+
+If you need to manually publish a new update of this package to NPM, run these steps in your terminal:
+
+1. **Bump the version**: Open `package.json` and increase the `"version"` number (e.g., from `1.1.1` to `1.2.0`).
+2. **Login to NPM** _(if you aren't already)_:
+   ```bash
+   npm login
+   ```
+3. **Publish the package**:
+   ```bash
+   npm publish --access public
+   ```
+   _(If your NPM account has 2FA enabled, you will need to add your authenticator code like this: `npm publish --access public`)_
+
+> **Security Note:** You never need to save or commit your NPM passwords or tokens in any files. Running `npm login` securely authenticates your local terminal session.
+
+---
+
 ## Reporting Bugs
+
 Please [open an issue](https://github.com/TiPS0/agentive/issues/new) and include:
+
 - Your OS and terminal
 - The Node version you are using (`node -v`)
 - Expected vs. actual behavior
@@ -140,6 +171,7 @@ Please [open an issue](https://github.com/TiPS0/agentive/issues/new) and include
 ---
 
 ## Code of Conduct
+
 Be kind, constructive, and respectful. We're all here to build something useful together.
 Harassment, spam, or low-effort contributions will be closed without review.
 
