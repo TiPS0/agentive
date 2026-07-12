@@ -3,13 +3,13 @@
 const path = require('path');
 const chalk = require('chalk');
 const fs = require('fs/promises');
-const { agentDirectoryExists, removeDependency, readSettings, unlinkAgentFile } = require('../utils/fileSystem');
+const { agentDirectoryExists, removeDependency, readSettings, unlinkAgentFile, removeSkillFromReadme, removeLibraryFromReadme } = require('../utils/fileSystem');
 
 async function runRemove(packageName) {
   const cwd = process.cwd();
 
   console.log('');
-  console.log(chalk.bold.cyan('  🤖 agentive') + chalk.gray(' — Removing Package'));
+  console.log(chalk.bold.cyan('  Agentive') + chalk.gray(' — Removing Package'));
   console.log(chalk.gray('  ─────────────────────────────────────────────'));
   console.log('');
 
@@ -38,14 +38,29 @@ async function runRemove(packageName) {
     name = settings.dependencies[packageName].name || packageName;
   }
 
-  const folderName = type.endsWith('s') ? type : `${type}s`;
-  const targetFile = path.join(agentsDir, folderName, `${packageName}.md`);
+  const folderName = type === 'library' ? 'library' : (type.endsWith('s') ? type : `${type}s`);
+  const oldTargetFile = path.join(agentsDir, folderName, `${packageName}.md`);
+  const newTargetFolder = path.join(agentsDir, folderName, packageName);
 
   try {
-    await fs.rm(targetFile, { force: true });
+    await fs.rm(oldTargetFile, { force: true });
+    await fs.rm(newTargetFolder, { recursive: true, force: true });
+    
+    // Also try to remove cursor file if it exists
+    const cursorFile = path.join(cwd, '.cursor', 'rules', `${packageName}.mdc`);
+    await fs.rm(cursorFile, { force: true }).catch(() => {});
+    
     const removedFromSettings = await removeDependency(agentsDir, packageName);
+    
     await unlinkAgentFile(cwd, `.agents/${folderName}/${packageName}.md`, `[${type.toUpperCase()}] ${name}`);
     
+    if (type === 'skill') {
+      await unlinkAgentFile(cwd, `.agents/skills/${packageName}/SKILL.md`, `[${type.toUpperCase()}] ${name}`);
+      await removeSkillFromReadme(agentsDir, packageName);
+    } else if (type === 'library') {
+      await unlinkAgentFile(cwd, `.agents/library/${packageName}/info.md`, `[LIBRARY] ${name}`);
+      await removeLibraryFromReadme(agentsDir, packageName);
+    }
     if (removedFromSettings) {
       console.log(chalk.green('  ✔ ') + `Successfully removed ${chalk.cyan(packageName)}`);
     } else {

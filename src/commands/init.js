@@ -123,6 +123,7 @@ async function runInit() {
   console.log(chalk.gray('    │   ├── review.md               ← code review command'));
   console.log(chalk.gray('    │   └── fix-issue.md            ← zero-error fix command'));
   console.log(chalk.gray('    ├── skills/'));
+  console.log(chalk.gray('    ├── library/'));
   console.log(chalk.gray('    └── rules/'));
   console.log('');
   console.log(chalk.gray('  Edit the markdown files to customise agent behaviour.'));

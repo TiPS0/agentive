@@ -3,33 +3,23 @@
 const path = require('path');
 const chalk = require('chalk');
 const fs = require('fs/promises');
-const { agentDirectoryExists, addDependency, linkAgentFile } = require('../utils/fileSystem');
+const prompts = require('prompts');
+const { agentDirectoryExists, addDependency, linkAgentFile, updateLibraryReadme } = require('../utils/fileSystem');
 
-// A simple regex to parse YAML frontmatter block at the start of a string
-const frontmatterRegex = /^---\r?\n([\s\S]*?)\r?\n---\r?\n/;
-
-function parseFrontmatter(content) {
-  const match = content.match(frontmatterRegex);
-  const metadata = {};
-  if (match && match[1]) {
-    const lines = match[1].split('\n');
-    lines.forEach(line => {
-      const parts = line.split(':');
-      if (parts.length >= 2) {
-        const key = parts[0].trim();
-        const value = parts.slice(1).join(':').trim().replace(/^['"](.*)['"]$/, '$1');
-        metadata[key] = value;
-      }
-    });
+async function checkExists(p) {
+  try {
+    await fs.access(p);
+    return true;
+  } catch {
+    return false;
   }
-  return { metadata, rawMatch: match ? match[0] : '' };
 }
 
 async function runInstall(packageName) {
   const cwd = process.cwd();
 
   console.log('');
-  console.log(chalk.bold.cyan('  🤖 agentive') + chalk.gray(' — Installing Package'));
+  console.log(chalk.bold.cyan('  Agentive') + chalk.gray(' — Installing Library Package'));
   console.log(chalk.gray('  ─────────────────────────────────────────────'));
   console.log('');
 
@@ -46,54 +36,134 @@ async function runInstall(packageName) {
 
   console.log(chalk.gray(`  Fetching ${packageName}...`));
 
-  let fileContent = '';
+  let infoContent = '';
+  let typesContent = '';
+  let rulesContent = '';
+  let combinedContent = '';
+  let name = packageName;
+  let version = '1.0.0';
+  let description = `A library package for ${packageName}`;
+
   try {
-    let url = packageName;
-    if (!url.startsWith('http')) {
-      // Mock registry URL for demonstration
-      url = `https://raw.githubusercontent.com/TiPS0/agentive-registry/main/packages/${packageName}.md`;
-    }
-    
-    // Attempt fetch
-    const response = await fetch(url);
+    const response = await fetch(`https://registry.npmjs.org/${packageName}`);
     if (!response.ok) {
-      throw new Error(`Failed to fetch from registry (Status: ${response.status})`);
+      throw new Error(`Failed to fetch from NPM registry (Status: ${response.status})`);
     }
-    fileContent = await response.text();
+    const npmData = await response.json();
+    
+    version = npmData['dist-tags']?.latest || '1.0.0';
+    description = npmData.description || description;
+    name = npmData.name || packageName;
+    const homepage = npmData.homepage || npmData.repository?.url || `https://www.npmjs.com/package/${packageName}`;
+    let readmeContent = npmData.readme || '';
+    
+    if (!readmeContent) {
+      try {
+        const unpkgResponse = await fetch(`https://unpkg.com/${packageName}/README.md`);
+        if (unpkgResponse.ok) {
+          readmeContent = await unpkgResponse.text();
+        }
+      } catch (err) {}
+    }
+
+    try {
+      const typesResponse = await fetch(`https://unpkg.com/${packageName}/index.d.ts`);
+      if (typesResponse.ok) {
+        typesContent = await typesResponse.text();
+      }
+    } catch (err) {}
+
+    infoContent = `# ${name} Reference\n\n## Installation Summary\n\`\`\`bash\nnpm install ${name}\n\`\`\`\n\n## Overview\n${description}\n\nFor more information, visit [${name}](${homepage}).\n\n${readmeContent ? `## Documentation\n\n${readmeContent}` : ''}`;
+    
+    const rulesObj = {
+      library: name,
+      constraints: [
+        `Follow standard practices for ${name}.`,
+        `Check official documentation for latest patterns.`
+      ]
+    };
+    rulesContent = JSON.stringify(rulesObj, null, 2);
+
+    combinedContent = `${infoContent}\n\n## Types\n\`\`\`typescript\n${typesContent || '// No types found'}\n\`\`\`\n\n## Rules\n\`\`\`json\n${rulesContent}\n\`\`\``;
+
   } catch (err) {
-    console.log(chalk.yellow('  ⚠ ') + `Fetch failed: ${err.message}`);
-    console.log(chalk.gray('  Creating a mock package for demonstration...'));
-    fileContent = `---
-name: ${packageName}
-type: skill
-version: 1.0.0
-description: A mock skill for ${packageName}
----
-# ${packageName}
-This is a generated placeholder skill because the registry could not be reached.
-`;
+    console.log(chalk.red('  ✖ ') + `Fetch failed: ${err.message}`);
+    console.log(chalk.gray('  Skipping installation. Please check the package name and try again.'));
+    process.exit(1);
   }
 
-  const { metadata } = parseFrontmatter(fileContent);
-  const type = metadata.type || 'skill';
-  const name = metadata.name || packageName;
-  const version = metadata.version || '1.0.0';
-  
-  // Pluralize type for folder name (skill -> skills, rule -> rules)
-  const folderName = type.endsWith('s') ? type : `${type}s`;
   const agentsDir = path.join(cwd, '.agents');
-  const targetFolder = path.join(agentsDir, folderName);
-  const targetFile = path.join(targetFolder, `${packageName}.md`);
+  const targetFolder = path.join(agentsDir, 'library', packageName);
+  const relativePath = `.agents/library/${packageName}/info.md`;
   
+  const choices = [
+    { title: '.agents/library (Agentive Knowledge)', value: 'agents', selected: true }
+  ];
+
+  if (await checkExists(path.join(cwd, '.cursor'))) {
+    choices.push({ title: '.cursor/rules (Cursor Editor)', value: 'cursor' });
+  }
+  if (await checkExists(path.join(cwd, '.windsurfrules'))) {
+    choices.push({ title: '.windsurfrules (Windsurf Editor)', value: 'windsurf' });
+  }
+  if (await checkExists(path.join(cwd, '.claude.md'))) {
+    choices.push({ title: '.claude.md (Claude AI)', value: 'claude' });
+  }
+
+  let selectedDestinations = ['agents'];
+  if (choices.length > 1) {
+    const { dests } = await prompts({
+      type: 'multiselect',
+      name: 'dests',
+      message: 'Where would you like to install this library?',
+      instructions: '\n↑/↓: Move ◦ ←/→ or [Space]: Toggle ◦ A: Toggle all ◦ ↵ Submit',
+      choices,
+      min: 1
+    });
+    if (dests && dests.length > 0) {
+      selectedDestinations = dests;
+    }
+  }
+
   try {
-    await fs.mkdir(targetFolder, { recursive: true });
-    await fs.writeFile(targetFile, fileContent, 'utf-8');
-    
-    await addDependency(agentsDir, packageName, version, type);
-    await linkAgentFile(cwd, `.agents/${folderName}/${packageName}.md`, `[${type.toUpperCase()}] ${name}`);
-    
-    console.log(chalk.green('  ✔ ') + `Successfully installed ${chalk.cyan(name)} v${version}`);
-    console.log(chalk.gray(`      Location: .agents/${folderName}/${packageName}.md`));
+    if (selectedDestinations.includes('agents')) {
+      await fs.mkdir(targetFolder, { recursive: true });
+      await fs.writeFile(path.join(targetFolder, 'info.md'), infoContent, 'utf-8');
+      await fs.writeFile(path.join(targetFolder, 'types.d.ts'), typesContent, 'utf-8');
+      await fs.writeFile(path.join(targetFolder, 'rules.json'), rulesContent, 'utf-8');
+      
+      await addDependency(agentsDir, packageName, version, 'library');
+      await linkAgentFile(cwd, relativePath, `[LIBRARY] ${name}`, '## Installed Libraries');
+      await updateLibraryReadme(agentsDir, packageName, description, version);
+      
+      console.log(chalk.green('  ✔ ') + `Successfully installed ${chalk.cyan(name)} v${version} to .agents/library/${packageName}/`);
+    }
+
+    if (selectedDestinations.includes('cursor')) {
+      const cursorRulesDir = path.join(cwd, '.cursor', 'rules');
+      await fs.mkdir(cursorRulesDir, { recursive: true });
+      const cursorFile = path.join(cursorRulesDir, `${packageName}.mdc`);
+      await fs.writeFile(cursorFile, combinedContent, 'utf-8');
+      console.log(chalk.green('  ✔ ') + `Successfully installed ${chalk.cyan(name)} to .cursor/rules/${packageName}.mdc`);
+    }
+
+    if (selectedDestinations.includes('windsurf')) {
+      const windsurfFile = path.join(cwd, '.windsurfrules');
+      let existing = '';
+      try { existing = await fs.readFile(windsurfFile, 'utf-8'); } catch(e) {}
+      const newContent = existing + `\n\n# Library: ${name}\n\n` + combinedContent;
+      await fs.writeFile(windsurfFile, newContent, 'utf-8');
+      console.log(chalk.green('  ✔ ') + `Successfully appended ${chalk.cyan(name)} to .windsurfrules`);
+    }
+
+    if (selectedDestinations.includes('claude')) {
+      const claudeFile = path.join(cwd, '.claude.md');
+      let existing = '';
+      try { existing = await fs.readFile(claudeFile, 'utf-8'); } catch(e) {}
+      const newContent = existing + `\n\n# Library: ${name}\n\n` + combinedContent;
+      await fs.writeFile(claudeFile, newContent, 'utf-8');
+      console.log(chalk.green('  ✔ ') + `Successfully appended ${chalk.cyan(name)} to .claude.md`);
+    }
   } catch (err) {
     console.log(chalk.red('  ✖ ') + `Failed to write file: ${err.message}`);
     process.exit(1);
