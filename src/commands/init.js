@@ -16,7 +16,7 @@ async function runInit() {
   const projectName = path.basename(cwd);
 
   console.log('');
-  console.log(chalk.bold.cyan('  🤖 agentive') + chalk.gray(' — Universal AI Agent Workspace Setup'));
+  console.log(chalk.bold.cyan(`  Agentive v${version}`) + chalk.gray(' — Universal AI Agent Workspace Setup'));
   console.log(chalk.gray('  ─────────────────────────────────────────────'));
   console.log('');
 
@@ -123,6 +123,7 @@ async function runInit() {
   console.log(chalk.gray('    │   ├── review.md               ← code review command'));
   console.log(chalk.gray('    │   └── fix-issue.md            ← zero-error fix command'));
   console.log(chalk.gray('    ├── skills/'));
+  console.log(chalk.gray('    ├── library/'));
   console.log(chalk.gray('    └── rules/'));
   console.log('');
   console.log(chalk.gray('  Edit the markdown files to customise agent behaviour.'));

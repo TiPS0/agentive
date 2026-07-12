@@ -20,26 +20,30 @@
 
 ---
 
-Stop maintaining separate rule files for every AI tool. **agentive** scaffolds a universal `.agents/` directory, an `AGENTS.md` file, and an `.aiignore` file in your project — providing a **single source of truth** for all your agent commands, skills, and rules, while significantly saving token usage.
+Stop maintaining separate rule files for every AI tool. **agentive** scaffolds a universal `.agents/` directory, an `AGENTS.md` file, and an `.aiignore` file in your project — providing a **single source of truth** for all your agent commands, skills, libraries, and rules, while significantly saving token usage.
 
 ## ✨ Why Agentive?
 
-| Feature                       | Description                                                                  |
-| :---------------------------- | :--------------------------------------------------------------------------- |
-| 🚀 **Interactive Setup**      | Select your environment (General, Expo, React Native) to get tailored rules. |
-| 🌍 **Universal**              | Framework-agnostic setup. Works with React, Python, Go, you name it.         |
-| 🧠 **Single Source of Truth** | Centralize skills and rules for _all_ your AI agents in one place.           |
-| ⚡ **Dynamic Layering**       | Scaffolds base rules and safely merges framework-specific guardrails.        |
+| Feature                       | Description                                                                    |
+| :---------------------------- | :----------------------------------------------------------------------------- |
+| 🚀 **Interactive Setup**      | Select your environment (General, Expo, React Native) to get tailored rules.   |
+| 🌍 **Universal**              | Framework-agnostic setup. Works with React, Python, Go, you name it.           |
+| 🧠 **Single Source of Truth** | Centralize skills, libraries, and rules for _all_ your AI agents in one place. |
+| ⚡ **Dynamic Layering**       | Scaffolds base rules and safely merges framework-specific guardrails.          |
 
 ---
 
 ## 📦 Installation & Usage
 
-Run one command, get a fully structured AI agent workspace instantly:
+Run one command to get a fully structured AI agent workspace instantly. 
+**Note for Users:** Always append `@latest` to ensure `npx` downloads the newest public release from the npm registry, avoiding any locally cached versions:
 
 ```bash
-npx @p_tipso/agentive
+npx @p_tipso/agentive@latest
 ```
+
+> **Note for Contributors:** If you are testing this package locally (e.g., via `npm link`), simply run `npx @p_tipso/agentive` (without `@latest`) to execute your local codebase.
+
 
 If you prefer to install it globally for frequent usage:
 
@@ -50,13 +54,13 @@ agentive
 
 ### CLI Commands
 
-| Command                               | Description                                                     |
-| :------------------------------------ | :-------------------------------------------------------------- |
-| `npx @p_tipso/agentive init`          | Scaffold `.agents/` workspace instantly in current directory    |
-| `npx @p_tipso/agentive install <pkg>` | Install an agent skill or rule from the registry (alias: `add`) |
-| `npx @p_tipso/agentive remove <pkg>`  | Remove an installed skill or rule (alias: `rm`)                 |
-| `npx @p_tipso/agentive --version`     | Print the current CLI version                                   |
-| `npx @p_tipso/agentive --help`        | Show available commands and options                             |
+| Command                               | Description                                                               |
+| :------------------------------------ | :------------------------------------------------------------------------ |
+| `npx @p_tipso/agentive init`          | Scaffold `.agents/` workspace instantly in current directory              |
+| `npx @p_tipso/agentive install <pkg>` | Install an agent skill, library, or rule from the registry (alias: `add`) |
+| `npx @p_tipso/agentive remove <pkg>`  | Remove an installed skill, library, or rule (alias: `rm`)                 |
+| `npx @p_tipso/agentive --version`     | Print the current CLI version                                             |
+| `npx @p_tipso/agentive --help`        | Show available commands and options                                       |
 
 ---
 
@@ -77,6 +81,8 @@ your-project/
 │   │   └── fix-issue.md           ← Example zero-error fix command
 │   ├── skills/
 │   │   └── README.md              ← Guide: how to add skills
+│   ├── library/
+│   │   └── README.md              ← Guide: passive library references
 │   └── rules/
 │       └── README.md              ← Guide: how to add rules
 ```
@@ -86,6 +92,7 @@ your-project/
 - **`.aiignore`**: Prevents context pollution and saves tokens by hiding files (like `node_modules` or build outputs) from your AI agents.
 - **`commands/`**: Reusable prompt instructions that agents can execute on demand (e.g. `review.md`).
 - **`skills/`**: Skill definitions that teach agents how to behave in specific roles.
+- **`library/`**: Passive library documentation and API references.
 - **`rules/`**: Project-wide rules that all agents must follow strictly.
 
 ### 🌟 Framework-Specific Guardrails

@@ -31,6 +31,7 @@ async function agentDirectoryExists(cwd) {
  *   ├── settings.local.json
  *   ├── commands/
  *   ├── skills/
+ *   ├── library/
  *   └── rules/
  *
  * @param {string} cwd - The user's current working directory
@@ -42,13 +43,12 @@ async function createAgentDirectory(cwd, overwrite = false) {
 
   if (overwrite) {
     await fs.rm(agentsDir, { recursive: true, force: true });
-    // Also remove old AGENTS.md if overwriting
-    try { await fs.rm(path.join(cwd, 'AGENTS.md'), { force: true }); } catch { /* noop */ }
   }
 
   await fs.mkdir(agentsDir, { recursive: true });
   await fs.mkdir(path.join(agentsDir, 'commands'), { recursive: true });
   await fs.mkdir(path.join(agentsDir, 'skills'), { recursive: true });
+  await fs.mkdir(path.join(agentsDir, 'library'), { recursive: true });
   await fs.mkdir(path.join(agentsDir, 'rules'), { recursive: true });
 
   return agentsDir;
@@ -130,10 +130,21 @@ async function copyTemplates(templatesDir, agentsDir, projectName, projectType =
 
   // 1. Copy AGENTS.md from base to project root
   const agentMdSrc = path.join(templatesDir, 'base', 'AGENTS.md');
+  const targetAgentMdPath = path.join(cwd, 'AGENTS.md');
   try {
     let content = await fs.readFile(agentMdSrc, 'utf-8');
     content = replacePlaceholders(content, projectName);
-    await fs.writeFile(path.join(cwd, 'AGENTS.md'), content, 'utf-8');
+    
+    let finalContent = content;
+    try {
+      const existingContent = await fs.readFile(targetAgentMdPath, 'utf-8');
+      if (existingContent.trim()) {
+        // Prepend the new template content to the existing content
+        finalContent = content + '\n\n' + existingContent;
+      }
+    } catch { /* target may not exist, that's fine */ }
+
+    await fs.writeFile(targetAgentMdPath, finalContent, 'utf-8');
   } catch { /* template may not exist */ }
 
   // 1.5 Copy aiignore from base to project root as .aiignore
@@ -143,7 +154,7 @@ async function copyTemplates(templatesDir, agentsDir, projectName, projectType =
     await fs.writeFile(path.join(cwd, '.aiignore'), content, 'utf-8');
   } catch { /* template may not exist */ }
 
-  const foldersToInclude = ['commands', 'skills', 'rules'];
+  const foldersToInclude = ['commands', 'skills', 'rules', 'library'];
 
   // Helper to copy a specific template layer
   const copyLayer = async (layerPath) => {
@@ -257,13 +268,19 @@ async function removeDependency(agentsDir, packageName) {
 /**
  * Link a downloaded agent file into AGENTS.md
  */
-async function linkAgentFile(cwd, relativePath, title) {
+async function linkAgentFile(cwd, relativePath, title, heading = '## Installed Skills') {
   const agentMdPath = path.join(cwd, 'AGENTS.md');
+  const linkStr = `- [${title}](${relativePath})`;
+  
   try {
     let content = await fs.readFile(agentMdPath, 'utf-8');
-    const linkStr = `- [${title}](${relativePath})`;
+    
     if (!content.includes(linkStr)) {
-      content += `\n${linkStr}\n`;
+      if (content.includes(heading)) {
+        content = content.replace(heading, `${heading}\n${linkStr}`);
+      } else {
+        content = content.trimEnd() + `\n\n${heading}\n${linkStr}\n`;
+      }
       await fs.writeFile(agentMdPath, content, 'utf-8');
     }
   } catch (err) {
@@ -292,6 +309,88 @@ function escapeRegex(string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
+/**
+ * Update the .agents/skills/README.md
+ */
+async function updateSkillsReadme(agentsDir, packageName, description, version) {
+  const readmePath = path.join(agentsDir, 'skills', 'README.md');
+  const heading = '## Installed Skills';
+  const linkStr = `- **[${packageName}](./${packageName}/SKILL.md)** (v${version}): ${description || 'No description available.'}`;
+  
+  try {
+    let content = await fs.readFile(readmePath, 'utf-8');
+    
+    if (!content.includes(linkStr)) {
+      if (content.includes(heading)) {
+        content = content.replace(heading, `${heading}\n${linkStr}`);
+      } else {
+        content = content.trimEnd() + `\n\n${heading}\n${linkStr}\n`;
+      }
+      await fs.writeFile(readmePath, content, 'utf-8');
+    }
+  } catch (err) {
+    // README doesn't exist, create it
+    const content = `# Skills Directory\n\nThis directory contains AI agent skills.\n\n${heading}\n${linkStr}\n`;
+    await fs.writeFile(readmePath, content, 'utf-8');
+  }
+}
+
+/**
+ * Remove a skill from .agents/skills/README.md
+ */
+async function removeSkillFromReadme(agentsDir, packageName) {
+  const readmePath = path.join(agentsDir, 'skills', 'README.md');
+  try {
+    let content = await fs.readFile(readmePath, 'utf-8');
+    const lines = content.split('\n');
+    const newLines = lines.filter(line => !line.includes(`[${packageName}](./${packageName}/SKILL.md)`));
+    await fs.writeFile(readmePath, newLines.join('\n'), 'utf-8');
+  } catch (err) {
+    // If it doesn't exist, do nothing
+  }
+}
+
+/**
+ * Update the .agents/library/README.md
+ */
+async function updateLibraryReadme(agentsDir, packageName, description, version) {
+  const readmePath = path.join(agentsDir, 'library', 'README.md');
+  const heading = '## Installed Libraries';
+  const linkStr = `- **[${packageName}](./${packageName}/info.md)** (v${version}): ${description || 'No description available.'}`;
+  
+  try {
+    let content = await fs.readFile(readmePath, 'utf-8');
+    
+    if (!content.includes(linkStr)) {
+      if (content.includes(heading)) {
+        content = content.replace(heading, `${heading}\n${linkStr}`);
+      } else {
+        content = content.trimEnd() + `\n\n${heading}\n${linkStr}\n`;
+      }
+      await fs.writeFile(readmePath, content, 'utf-8');
+    }
+  } catch (err) {
+    await fs.mkdir(path.dirname(readmePath), { recursive: true });
+    const content = `# Library Directory\n\nThis directory contains AI agent passive library references.\n\n${heading}\n${linkStr}\n`;
+    await fs.writeFile(readmePath, content, 'utf-8');
+  }
+}
+
+/**
+ * Remove a library from .agents/library/README.md
+ */
+async function removeLibraryFromReadme(agentsDir, packageName) {
+  const readmePath = path.join(agentsDir, 'library', 'README.md');
+  try {
+    let content = await fs.readFile(readmePath, 'utf-8');
+    const lines = content.split('\n');
+    const newLines = lines.filter(line => !line.includes(`[${packageName}](./${packageName}/info.md)`));
+    await fs.writeFile(readmePath, newLines.join('\n'), 'utf-8');
+  } catch (err) {
+    // If it doesn't exist, do nothing
+  }
+}
+
 module.exports = {
   agentDirectoryExists,
   createAgentDirectory,
@@ -303,4 +402,8 @@ module.exports = {
   removeDependency,
   linkAgentFile,
   unlinkAgentFile,
+  updateSkillsReadme,
+  removeSkillFromReadme,
+  updateLibraryReadme,
+  removeLibraryFromReadme,
 };
