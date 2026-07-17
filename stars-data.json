@@ -197,6 +197,48 @@
           "stars": 0
         }
       ]
+    },
+    {
+      "timestamp": "2026-07-17T05:11:55.072Z",
+      "totalStars": 1,
+      "repos": [
+        {
+          "fullName": "TiPS0/agentive",
+          "name": "agentive",
+          "owner": "TiPS0",
+          "stars": 1
+        },
+        {
+          "fullName": "TiPS0/expo-mobile",
+          "name": "expo-mobile",
+          "owner": "TiPS0",
+          "stars": 0
+        },
+        {
+          "fullName": "TiPS0/expo-starter",
+          "name": "expo-starter",
+          "owner": "TiPS0",
+          "stars": 0
+        },
+        {
+          "fullName": "TiPS0/mobile-server",
+          "name": "mobile-server",
+          "owner": "TiPS0",
+          "stars": 0
+        },
+        {
+          "fullName": "TiPS0/presentation-generator",
+          "name": "presentation-generator",
+          "owner": "TiPS0",
+          "stars": 0
+        },
+        {
+          "fullName": "TiPS0/TiPS0",
+          "name": "TiPS0",
+          "owner": "TiPS0",
+          "stars": 0
+        }
+      ]
     }
   ],
   "starsAtLastNotification": 1
