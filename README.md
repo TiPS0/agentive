@@ -26,7 +26,7 @@ Stop maintaining separate rule files for every AI tool. **agentive** scaffolds a
 
 | Feature                       | Description                                                                    |
 | :---------------------------- | :----------------------------------------------------------------------------- |
-| 🚀 **Interactive Setup**      | Select your environment (General, Expo, React Native) to get tailored rules.   |
+| 🚀 **Interactive Setup**      | Select your environment (General, Expo) to get tailored rules.                 |
 | 🌍 **Universal**              | Framework-agnostic setup. Works with React, Python, Go, you name it.           |
 | 🧠 **Single Source of Truth** | Centralize skills, libraries, and rules for _all_ your AI agents in one place. |
 | ⚡ **Dynamic Layering**       | Scaffolds base rules and safely merges framework-specific guardrails.          |
@@ -64,9 +64,24 @@ agentive
 
 ---
 
+## 🛠️ Available Skills
+
+These are the official, built-in skills available out-of-the-box when you scaffold a workspace:
+
+| Skill Name | Category | Description |
+| :--- | :--- | :--- |
+| `agent-debug` | Base | An advanced, autonomous deep-system debugging skill that traces cross-file execution flows, researches library errors, checks git history, and guarantees zero-error root-cause fixes. |
+| `agent-learn` | Base | A meta-skill that acts as a Skill Architect, using web research and iterative "grill-me" interviews to generate robust AI skills. |
+| `setup-docs-structure` | Base | Scaffolds a comprehensive, AI-optimized documentation directory using strict templates, index files, and exact project guidelines. |
+| `setup-route-groups` | Base | Guidelines for enforcing the Route Groups pattern across modern file-based routing frameworks (Next.js, Expo Router, Nuxt). |
+| `expo-create-app` | Mobile > Expo | Guidelines for initiating a new modern Expo project using the latest templates and standards directly in the current directory. |
+| `expo-sdk-upgrade` | Mobile > Expo | Safely upgrade the local codebase's native wrappers and library versions to the targeted modern Expo SDK layout, resolve dependency conflicts, and auto-fix code errors. |
+
+---
+
 ## 🏗 What Happens Under the Hood?
 
-When you run `agentive`, it launches an interactive wizard asking about your project environment (e.g., General, Mobile > Expo, React Native). It then intelligently scaffolds a tailored workspace:
+When you run `agentive`, it launches an interactive wizard asking about your project environment (e.g., General, Mobile > Expo). It then intelligently scaffolds a tailored workspace:
 
 ```text
 your-project/
@@ -97,7 +112,7 @@ your-project/
 
 ### 🌟 Framework-Specific Guardrails
 
-By selecting a specific framework (like **Expo** or **React Native**), `agentive` overlays expertly crafted rules into your `.agents/` folder. This ensures your AI understands nuances like _Expo Router_, _Native Modules_, or _Unitless Pixels_ right out of the box—preventing common hallucinations.
+By selecting a specific framework (like **Expo**), `agentive` overlays expertly crafted rules into your `.agents/` folder. This ensures your AI understands nuances like _Expo Router_ right out of the box—preventing common hallucinations.
 
 ---
 
