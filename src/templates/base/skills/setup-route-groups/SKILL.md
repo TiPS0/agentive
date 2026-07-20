@@ -1,7 +1,7 @@
 ---
-name: route-groups-setup
+name: setup-route-groups
 description: Guidelines for enforcing the Route Groups pattern across modern file-based routing frameworks (Next.js, Expo Router, Nuxt).
-version: 1.1.0
+version: 1.1.1
 updated_at: 2026-07-10
 ---
 
