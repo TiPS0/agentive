@@ -20,7 +20,7 @@
 
 ---
 
-Stop maintaining separate rule files for every AI tool. **agentive** scaffolds a universal `.agents/` directory, an `AGENTS.md` file, and an `.aiignore` file in your project — providing a **single source of truth** for all your agent commands, skills, libraries, and rules, while significantly saving token usage.
+Stop maintaining separate rule files for every AI tool. **agentive** scaffolds a universal `.agents/` directory, an `AGENTS.md` file, and an `.aiignore` file in your project — providing a **single source of truth** for all your agent skills, libraries, and rules, while significantly saving token usage.
 
 ## ✨ Why Agentive?
 
@@ -92,10 +92,6 @@ your-project/
 ├── .agents/
 │   ├── settings.json              ← Project config
 │   ├── settings.local.json        ← Local machine overrides (auto-gitignored)
-│   ├── commands/
-│   │   ├── README.md              ← Guide: how to add commands
-│   │   ├── review.md              ← Example code review command
-│   │   └── fix-issue.md           ← Example zero-error fix command
 │   ├── skills/
 │   │   └── README.md              ← Guide: how to add skills
 │   ├── library/
@@ -107,10 +103,9 @@ your-project/
 ### 📂 File & Folder Guide
 
 - **`.aiignore`**: Prevents context pollution and saves tokens by hiding files (like `node_modules` or build outputs) from your AI agents.
-- **`commands/`**: Reusable prompt instructions that agents can execute on demand (e.g. `review.md`).
-- **`skills/`**: Skill definitions that teach agents how to behave in specific roles.
-- **`library/`**: Passive library documentation and API references.
-- **`rules/`**: Project-wide rules that all agents must follow strictly.
+- **`skills/`**: Active capabilities or specialised tasks that you trigger manually (e.g. `expo-create-app/`). Think of these as complex tools your agent can use when you ask it to.
+- **`library/`**: Passive documentation and API references for your installed packages. Generated automatically via `npx agentive install <pkg>`.
+- **`rules/`**: Passive, project-wide rules (e.g. `coding-standards.md`) that apply to everything the agent does.
 
 ### 🌟 Framework-Specific Guardrails
 

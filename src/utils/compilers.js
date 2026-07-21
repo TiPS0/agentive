@@ -78,7 +78,6 @@ async function syncToCursor(agentsDir, cwd) {
  */
 async function syncToClaude(agentsDir, cwd, techStack) {
   const rulesContent    = await readMarkdownDir(path.join(agentsDir, 'rules'));
-  const commandsContent = await readMarkdownDir(path.join(agentsDir, 'commands'));
 
   const claudeMd = `# CLAUDE.md — AI Agent Instructions
 
@@ -91,9 +90,6 @@ async function syncToClaude(agentsDir, cwd, techStack) {
 
 # Rules
 ${rulesContent}
-
-# Commands
-${commandsContent}
 `.trim();
 
   await fs.writeFile(path.join(cwd, 'CLAUDE.md'), claudeMd, 'utf-8');
@@ -109,7 +105,6 @@ ${commandsContent}
  */
 async function syncToWindsurf(agentsDir, cwd, techStack) {
   const rulesContent    = await readMarkdownDir(path.join(agentsDir, 'rules'));
-  const commandsContent = await readMarkdownDir(path.join(agentsDir, 'commands'));
 
   const windsurfRules = `# .windsurfrules — AI Agent Instructions
 
@@ -120,9 +115,6 @@ async function syncToWindsurf(agentsDir, cwd, techStack) {
 
 # Rules
 ${rulesContent}
-
-# Commands
-${commandsContent}
 `.trim();
 
   await fs.writeFile(path.join(cwd, '.windsurfrules'), windsurfRules, 'utf-8');

@@ -9,6 +9,7 @@ const {
   copyTemplates,
   agentDirectoryExists,
   writeSettings,
+  readSettings,
 } = require('../utils/fileSystem');
 
 async function runInit() {
@@ -22,17 +23,33 @@ async function runInit() {
 
   // --- Guard: check if .agents/ already exists ---
   const alreadyExists = await agentDirectoryExists(cwd);
+  let existingSettings = null;
+
   if (alreadyExists) {
-    console.log(chalk.yellow('  ⚠ ') + chalk.white('.agents/ already exists — skipping (no files were modified).'));
-    console.log(chalk.gray('  Delete .agents/ first if you want to re-scaffold.'));
-    console.log('');
-    process.exit(0);
+    console.log(chalk.yellow('  ⚠ ') + chalk.white('.agents/ already exists in this project.'));
+    const updateResponse = await prompts({
+      type: 'confirm',
+      name: 'update',
+      message: 'Do you want to update to the latest version?',
+      initial: true,
+    });
+
+    if (!updateResponse.update) {
+      console.log(chalk.yellow('  ⚠ ') + 'Update cancelled.');
+      console.log('');
+      process.exit(0);
+    }
+    existingSettings = await readSettings(path.join(cwd, '.agents')) || {};
   }
 
   console.log(chalk.gray('  Installing to: ') + chalk.white(cwd));
   console.log('');
 
   // --- Prompt User for Project Type ---
+  let defaultProjectType = existingSettings?.projectType ? 
+    (existingSettings.projectType === 'general' ? 0 : (existingSettings.projectType === 'web' ? 1 : 2)) 
+    : 0;
+
   const typeResponse = await prompts({
     type: 'select',
     name: 'projectType',
@@ -42,7 +59,7 @@ async function runInit() {
       { title: 'Web Development', value: 'web' },
       { title: 'Mobile Development', value: 'mobile' },
     ],
-    initial: 0,
+    initial: defaultProjectType,
   });
 
   if (!typeResponse.projectType) {
@@ -52,6 +69,10 @@ async function runInit() {
 
   let framework = null;
   if (typeResponse.projectType === 'web') {
+    let defaultFramework = existingSettings?.framework ? 
+      (existingSettings.framework === 'nextjs' ? 0 : 1) 
+      : 0;
+      
     const fwResponse = await prompts({
       type: 'select',
       name: 'framework',
@@ -60,7 +81,7 @@ async function runInit() {
         { title: 'Next.js', value: 'nextjs' },
         { title: 'Nuxt', value: 'nuxt' },
       ],
-      initial: 0,
+      initial: defaultFramework,
     });
 
     if (!fwResponse.framework) {
@@ -69,6 +90,10 @@ async function runInit() {
     }
     framework = fwResponse.framework;
   } else if (typeResponse.projectType === 'mobile') {
+    let defaultFramework = existingSettings?.framework ? 
+      (existingSettings.framework === 'expo' ? 0 : 1) 
+      : 0;
+
     const fwResponse = await prompts({
       type: 'select',
       name: 'framework',
@@ -77,7 +102,7 @@ async function runInit() {
         { title: 'Expo (Recommended)', value: 'expo' },
         { title: 'React Native', value: 'react-native', disabled: true },
       ],
-      initial: 0,
+      initial: defaultFramework,
     });
 
     if (!fwResponse.framework) {
@@ -97,11 +122,12 @@ async function runInit() {
 
   // --- Write settings.json and settings.local.json ---
   await writeSettings(agentsDir, {
-    projectName,
+    projectName: existingSettings?.projectName || projectName,
     projectType,
     framework,
     agentiveVersion: version,
-    createdAt: new Date().toISOString(),
+    createdAt: existingSettings?.createdAt || new Date().toISOString(),
+    dependencies: existingSettings?.dependencies || {}
   });
 
   console.log(chalk.green('  ✔ ') + chalk.white('Created ') + chalk.cyan('AGENTS.md'));
@@ -119,9 +145,6 @@ async function runInit() {
   console.log(chalk.gray('    .agents/'));
   console.log(chalk.gray('    ├── settings.json               ← project config'));
   console.log(chalk.gray('    ├── settings.local.json         ← local overrides (gitignored)'));
-  console.log(chalk.gray('    ├── commands/'));
-  console.log(chalk.gray('    │   ├── review.md               ← code review command'));
-  console.log(chalk.gray('    │   └── fix-issue.md            ← zero-error fix command'));
   console.log(chalk.gray('    ├── skills/'));
   console.log(chalk.gray('    ├── library/'));
   console.log(chalk.gray('    └── rules/'));
