@@ -1,6 +1,6 @@
 ---
 name: agent-learn
-description: Triggered when the user runs /agent-learn. A meta-skill that acts as a Skill Architect, using web research and iterative 'grill-me' interviews to generate robust AI skills.
+description: Generate robust AI skills via iterative interview
 version: 1.4.1
 updated_at: 2026-07-21
 ---
@@ -8,7 +8,7 @@ updated_at: 2026-07-21
 # /agent-learn: The Meta-Skill Generator & Updater
 
 > **SYSTEM INSTRUCTION FOR AI AGENT:**
-> When the user invokes `/agent-learn <context>`, you are acting as a "Skill Architect". Your job is NOT to immediately write the skill file. Your job is to interrogate the user using interactive modals, validate the concept, and ultimately output a massive, comprehensive "Perfect Skill" playbook that leaves zero ambiguity.
+> When the user invokes `/agent-learn <context>`, you are acting as a "Skill Architect". Your job is NOT to immediately write the skill file. Your job is to interrogate the user iteratively, validate the concept, and ultimately output a massive, comprehensive "Perfect Skill" playbook that leaves zero ambiguity.
 
 ## Required Execution Workflow
 
@@ -21,12 +21,12 @@ You MUST execute the following phases in exact order. Do not skip phases.
    - **If Updating:** Use `view_file` to read the existing skill. Analyze the requested changes.
    - **If New:** Analyze if it is a valid concept for a skill. If invalid/too simple, tell the user this should be a simple Rule in `AGENTS.md` and exit.
 3. **Knowledge Verification (Research):** Before interrogating the user or writing any code, determine if the request involves a specific framework, library, or pattern. If you are not 100% confident in the absolute latest best practices, you MUST use the `search_web` tool or local codebase search tools (`grep_search`) to research current standards and validate your assumptions.
-4. **The Interrogation (Grill-Me Style):** You MUST use the `ask_question` tool to present multiple-choice interactive questions to the user.
-   - If the skill is highly complex, adopt a `/grill-me` style interview. Do not ask everything at once. Walk down each branch of the design tree sequentially, resolving dependencies between decisions one-by-one.
-   - Analyze the concept/update and generate likely implementation options. **Ensure all questions and options are written in clear, simple, and easy-to-understand language.**
-   - Set `is_multi_select` appropriately.
+4. **The Interrogation (Iterative Interview):** You MUST interrogate the user to clarify requirements before generating the skill.
+   - **Environment Fallback:** If your environment supports an `ask_question` tool (like Antigravity IDE), use it to present multiple-choice interactive questions. Otherwise, simply ask the user iteratively in the standard chat interface.
+   - Adopt an iterative interview style. **Do not ask everything at once.** Walk down each branch of the design tree sequentially, resolving dependencies between decisions one-by-one.
+   - Analyze the concept/update and generate likely implementation options for the user to choose from. **Ensure all questions and options are written in clear, simple, and easy-to-understand language.**
    - Ask about: specific libraries, strict constraints ("What NOT to do"), edge cases, and step-by-step agent workflow.
-5. Wait for the user to submit their answers. If more clarification is needed based on their answers, repeat step 4 before moving to Phase 2.
+5. Wait for the user to submit their answers. If more clarification is needed, repeat step 4 before moving to Phase 2.
 
 ### Phase 2: Framework Detection & Sync Targeting (Interactive)
 
@@ -34,14 +34,14 @@ You MUST execute the following phases in exact order. Do not skip phases.
 2. Check for the existence of `.agents`, `.cursor`, `.claude`, etc.
 3. **Conditional Targeting**:
    - If ONLY `.agents` is found (and no other framework folders), **SKIP** the question and proceed directly to Phase 3, targeting `.agents`.
-   - If other framework folders (like `.cursor`) are detected, use the `ask_question` tool with `is_multi_select: true` to ask: "Which framework folders should I install or update this skill in?"
-     - Options should include the detected folders.
+   - If other framework folders (like `.cursor`) are detected, ask the user: "Which framework folders should I install or update this skill in?"
+     - If the `ask_question` tool is available, use it with multiple-selection enabled and provide the detected folders as options. Otherwise, ask directly in the chat.
 4. If a question was asked, wait for the user's decision.
 
 ### Phase 3: Generation & Installation (Execution)
 
 1. Construct the skill document. You MUST force a massive, comprehensive template. Even if the user provided short answers, you must expand them into a professional, robust playbook containing all of the following sections:
-   - **Strict YAML Frontmatter** (`name`, `description`, `version`, `updated_at`).
+   - **Strict YAML Frontmatter** (`name`, `description`, `version`, `updated_at`). The `description` MUST be a short, action-oriented sentence (e.g. "Generate robust AI skills" instead of "This skill is triggered when...").
      - _Versioning Rule:_ If updating an existing skill, you MUST bump the semver version in the frontmatter (e.g., `1.0.0` -> `1.1.0` for new features, `1.0.1` for bug fixes, `2.0.0` for major structural changes). If creating a new skill, start at `1.0.0`.
      - _Updated At Rule:_ Always set or update `updated_at: YYYY-MM-DD` to the current date.
    - **System Instruction**: A `> **SYSTEM INSTRUCTION FOR AI AGENT:**` block demanding strict adherence.

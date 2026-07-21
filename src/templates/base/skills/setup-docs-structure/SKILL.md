@@ -1,6 +1,6 @@
 ---
 name: setup-docs-structure
-description: Scaffolds a comprehensive, AI-optimized documentation directory using strict templates, index files, and exact project guidelines.
+description: Scaffold AI-optimized documentation directory
 version: 1.1.0
 updated_at: 2026-07-10
 ---

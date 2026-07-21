@@ -1,6 +1,6 @@
 ---
 name: expo-create-app
-description: Guidelines for initiating a new modern Expo project using the latest templates and standards directly in the current directory.
+description: Initialize a new modern Expo project
 version: 1.1.2
 updated_at: 2026-07-20
 ---

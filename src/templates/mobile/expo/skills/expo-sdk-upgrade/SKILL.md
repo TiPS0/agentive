@@ -1,6 +1,6 @@
 ---
 name: expo-sdk-upgrade
-description: Safely upgrade the local codebase's native wrappers and library versions to the targeted modern Expo SDK layout, automatically resolve dependency conflicts, and auto-fix code errors.
+description: Upgrade project to a newer Expo SDK version
 version: 1.1.0
 updated_at: 2026-07-21
 ---
