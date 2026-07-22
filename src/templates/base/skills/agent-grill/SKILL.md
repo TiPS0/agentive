@@ -1,8 +1,8 @@
 ---
 name: agent-grill
 description: Audit architecture, logic, and docs to validate plans
-version: 1.0.0
-updated_at: 2026-07-21
+version: 1.1.0
+updated_at: 2026-07-22
 ---
 
 # /agent-grill: The Staff-Level Architecture & Audit Agent
@@ -58,9 +58,9 @@ When triggered, you MUST execute the following phases in exact order. Do not ski
 ### Phase 4: Validated Artifact Generation
 
 1. Once the user has answered all questions and the architecture is bulletproof, you MUST write the finalized plan to a permanent Markdown document.
-2. Ask the user for their preferred documentation directory (default to `docs/architecture/` if they don't have one).
-3. Save the document with a descriptive name (e.g., `docs/architecture/valid_plan_feature_x.md`).
-4. **Halt Execution:** After saving the document, notify the user that the plan is ready for review and ask if they would like you to begin implementation.
+2. Determine a `<feature-slug>` from the feature/context name using **kebab-case** (e.g., feature "Customer Self-Service" → `customer-self-service`). Use `list_dir` on `docs/grills/` to check if a file with that slug already exists. If it does, append a short qualifier to make the slug unique (e.g., `customer-self-service-v2`). If `docs/grills/` does not exist, create it before saving. Always create a **new** file; never overwrite an existing audit.
+3. Save the document as `docs/grills/<feature-slug>.md`.
+4. **Halt Execution:** After saving the document, notify the user that the validated plan is ready for review and ask if they would like you to begin implementation.
 
 ## 4. Edge Cases & Constraints (NEVER DO THIS)
 
