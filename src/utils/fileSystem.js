@@ -29,7 +29,6 @@ async function agentDirectoryExists(cwd) {
  *   .agents/
  *   ├── settings.json
  *   ├── settings.local.json
- *   ├── commands/
  *   ├── skills/
  *   ├── library/
  *   └── rules/
@@ -46,7 +45,6 @@ async function createAgentDirectory(cwd, overwrite = false) {
   }
 
   await fs.mkdir(agentsDir, { recursive: true });
-  await fs.mkdir(path.join(agentsDir, 'commands'), { recursive: true });
   await fs.mkdir(path.join(agentsDir, 'skills'), { recursive: true });
   await fs.mkdir(path.join(agentsDir, 'library'), { recursive: true });
   await fs.mkdir(path.join(agentsDir, 'rules'), { recursive: true });
@@ -76,6 +74,7 @@ async function writeSettings(agentsDir, settings) {
     framework:        settings.framework || null,
     agentiveVersion:  settings.agentiveVersion,
     createdAt:        settings.createdAt,
+    dependencies:     settings.dependencies || {},
   };
   await fs.writeFile(
     path.join(agentsDir, 'settings.json'),
@@ -84,15 +83,20 @@ async function writeSettings(agentsDir, settings) {
   );
 
   // settings.local.json — NOT committed (machine-specific overrides)
-  const localSettingsJson = {
-    _note: 'This file is gitignored. Add local machine-specific overrides here.',
-    overrides: {},
-  };
-  await fs.writeFile(
-    path.join(agentsDir, 'settings.local.json'),
-    JSON.stringify(localSettingsJson, null, 2) + '\n',
-    'utf-8'
-  );
+  const localSettingsPath = path.join(agentsDir, 'settings.local.json');
+  try {
+    await fs.access(localSettingsPath);
+  } catch {
+    const localSettingsJson = {
+      _note: 'This file is gitignored. Add local machine-specific overrides here.',
+      overrides: {},
+    };
+    await fs.writeFile(
+      localSettingsPath,
+      JSON.stringify(localSettingsJson, null, 2) + '\n',
+      'utf-8'
+    );
+  }
 
   // Auto-append to .gitignore if it exists in cwd
   const cwd = path.dirname(agentsDir);
@@ -115,7 +119,7 @@ async function writeSettings(agentsDir, settings) {
  * Copy template files from src/templates/ into the user's project.
  *
  * - AGENTS.md → project root (cwd)
- * - commands/, skills/, rules/ → .agents/
+ * - skills/, rules/, library/ → .agents/
  *
  * Replaces {{PROJECT_NAME}} and {{YEAR}} placeholders.
  *
@@ -139,8 +143,20 @@ async function copyTemplates(templatesDir, agentsDir, projectName, projectType =
     try {
       const existingContent = await fs.readFile(targetAgentMdPath, 'utf-8');
       if (existingContent.trim()) {
-        // Prepend the new template content to the existing content
-        finalContent = content + '\n\n' + existingContent;
+        const syncText = 'Re-run `npx @p_tipso/agentive` any time to re-sync changes to your AI tools.';
+        const syncIndex = existingContent.indexOf(syncText);
+        
+        if (syncIndex !== -1) {
+          // Replace everything up to the sync text with the new base template
+          const customPart = existingContent.substring(syncIndex + syncText.length).trimStart();
+          finalContent = content + (customPart ? '\n\n' + customPart : '');
+        } else if (existingContent.includes('# Agent Instructions')) {
+          // The title exists but no sync text. Do not duplicate the title.
+          finalContent = existingContent;
+        } else {
+          // Prepend the new template content to the existing content
+          finalContent = content + '\n\n' + existingContent;
+        }
       }
     } catch { /* target may not exist, that's fine */ }
 
@@ -154,7 +170,7 @@ async function copyTemplates(templatesDir, agentsDir, projectName, projectType =
     await fs.writeFile(path.join(cwd, '.aiignore'), content, 'utf-8');
   } catch { /* template may not exist */ }
 
-  const foldersToInclude = ['commands', 'skills', 'rules', 'library'];
+  const foldersToInclude = ['skills', 'rules', 'library'];
 
   // Helper to copy a specific template layer
   const copyLayer = async (layerPath) => {

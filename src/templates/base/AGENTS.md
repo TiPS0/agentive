@@ -15,7 +15,6 @@ All agent configuration lives inside the `.agents/` directory:
 |------|---------|
 | `.agents/settings.json` | Project-wide agent configuration (commit this) |
 | `.agents/settings.local.json` | Local machine overrides (gitignored) |
-| `.agents/commands/` | Reusable prompt commands your agents can execute |
 | `.agents/skills/` | Skill definitions that teach agents how to behave |
 | `.agents/library/` | Passive library documentation and API references |
 | `.agents/rules/` | Project-wide rules all agents must follow |
@@ -28,9 +27,8 @@ Additionally, you must also read and respect any rules defined in `.gitignore`, 
 ## Getting Started
 
 1. Edit the markdown files inside `.agents/` to customise agent behaviour
-2. Add new commands in `.agents/commands/` for common tasks
-3. Add new skills in `.agents/skills/` to teach agents new capabilities
-4. Install NPM packages to `.agents/library/` via `npx agentive install <pkg>`
-5. Add new rules in `.agents/rules/` to enforce coding standards
+2. Add new skills in `.agents/skills/` to teach agents new capabilities
+3. Install NPM packages to `.agents/library/` via `npx agentive install <pkg>`
+4. Add new rules in `.agents/rules/` to enforce coding standards
 
 Re-run `npx @p_tipso/agentive` any time to re-sync changes to your AI tools.

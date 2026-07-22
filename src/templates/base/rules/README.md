@@ -4,11 +4,27 @@ This folder contains **project-wide rules** — constraints and standards that a
 
 ## How to use
 
-Each `.md` file in this directory defines a set of rules. Agents will read and adhere to these rules for every task they perform.
+Each `.md` file in this directory defines a set of rules.
+
+> [!WARNING]
+> **Important Note for Agentive:**
+> Currently, the `agentive` CLI does not automatically merge these files into the root `AGENTS.md` file. Because AI Agents read the root `AGENTS.md` file for their global instructions, **creating a file here is not enough to activate it.**
+
+## How to Add New Rules (The Right Way)
+
+To ensure your rule is instantly active, you should use the custom AI skill we built for this project:
+
+**Run this prompt in the AI chat:**
+`/agent-rule <explain the rule you want to enforce>`
+
+The AI will automatically:
+
+1. Format it correctly and save it in this directory.
+2. Automatically inject it into the root `AGENTS.md` file so it becomes active immediately.
 
 ## Structure
 
-Each rule file should include:
+If you write rules manually, they should include:
 
 - **Purpose:** Why this rule exists
 - **Rules:** The specific constraints, listed clearly
@@ -16,14 +32,10 @@ Each rule file should include:
 
 ## Examples of rules you could add
 
-| File | Purpose |
-|------|---------|
-| `code-style.md` | Naming conventions, formatting, and patterns |
+| File              | Purpose                                        |
+| ----------------- | ---------------------------------------------- |
+| `code-style.md`   | Naming conventions, formatting, and patterns   |
 | `architecture.md` | How the project is structured, what goes where |
-| `testing.md` | Testing requirements, coverage expectations |
-| `security.md` | Security practices, data handling rules |
-| `git.md` | Branch naming, commit messages, PR conventions |
-
-## Adding new rules
-
-Create a new `.md` file in this folder. Name it after the topic (e.g., `error-handling.md`, `performance.md`).
+| `testing.md`      | Testing requirements, coverage expectations    |
+| `security.md`     | Security practices, data handling rules        |
+| `git.md`          | Branch naming, commit messages, PR conventions |

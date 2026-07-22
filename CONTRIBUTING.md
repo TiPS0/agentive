@@ -59,7 +59,7 @@ agentive/
 └── package.json                   # Project metadata & scripts
 ```
 
-> **Important:** When adding new built-in skills or commands for users, make sure you modify the files inside `src/templates/`!
+> **Important:** When adding new built-in skills for users, make sure you modify the files inside `src/templates/`!
 
 ---
 
@@ -73,7 +73,7 @@ Check the [Issues tab](https://github.com/TiPS0/agentive/issues) for any open is
 
 If you've found a highly effective agent rule or prompt command, you can add it to our templates:
 
-1. Add generic instructions to `src/templates/base/skills/` or `src/templates/base/commands/`.
+1. Add generic instructions to `src/templates/base/skills/`.
 2. Add framework-specific guardrails (e.g., Next.js, Vue) by creating a new folder like `src/templates/web/nextjs/rules/`.
 3. Update the corresponding `init.js` to include the new framework in the interactive prompts.
 

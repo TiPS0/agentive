@@ -20,7 +20,7 @@
 
 ---
 
-Stop maintaining separate rule files for every AI tool. **agentive** scaffolds a universal `.agents/` directory, an `AGENTS.md` file, and an `.aiignore` file in your project — providing a **single source of truth** for all your agent commands, skills, libraries, and rules, while significantly saving token usage.
+Stop maintaining separate rule files for every AI tool. **agentive** scaffolds a universal `.agents/` directory, an `AGENTS.md` file, and an `.aiignore` file in your project — providing a **single source of truth** for all your agent skills, libraries, and rules, while significantly saving token usage.
 
 ## ✨ Why Agentive?
 
@@ -71,9 +71,13 @@ These are the official, built-in skills available out-of-the-box when you scaffo
 | Skill Name | Category | Description |
 | :--- | :--- | :--- |
 | `agent-debug` | Base | An advanced, autonomous deep-system debugging skill that traces cross-file execution flows, researches library errors, checks git history, and guarantees zero-error root-cause fixes. |
+| `agent-grill` | Base | Audit architecture, logic, and docs to validate plans. |
 | `agent-learn` | Base | A meta-skill that acts as a Skill Architect, using web research and iterative "grill-me" interviews to generate robust AI skills. |
+| `agent-loop` | Base | Autonomous execution engine for continuous task completion with self-correction. |
+| `agent-plan` | Base | Requirements crystallizer that converts raw human intent into machine-ready specs. |
+| `agent-rule` | Base | Generate, update, and manage project-wide AI Rules across multiple IDE frameworks. |
 | `setup-docs-structure` | Base | Scaffolds a comprehensive, AI-optimized documentation directory using strict templates, index files, and exact project guidelines. |
-| `setup-route-groups` | Base | Guidelines for enforcing the Route Groups pattern across modern file-based routing frameworks (Next.js, Expo Router, Nuxt). |
+| `setup-route-groups` | Web & Mobile | Guidelines for enforcing the Route Groups pattern across modern file-based routing frameworks (Next.js, Expo Router, Nuxt). |
 | `expo-create-app` | Mobile > Expo | Guidelines for initiating a new modern Expo project using the latest templates and standards directly in the current directory. |
 | `expo-sdk-upgrade` | Mobile > Expo | Safely upgrade the local codebase's native wrappers and library versions to the targeted modern Expo SDK layout, resolve dependency conflicts, and auto-fix code errors. |
 
@@ -90,10 +94,6 @@ your-project/
 ├── .agents/
 │   ├── settings.json              ← Project config
 │   ├── settings.local.json        ← Local machine overrides (auto-gitignored)
-│   ├── commands/
-│   │   ├── README.md              ← Guide: how to add commands
-│   │   ├── review.md              ← Example code review command
-│   │   └── fix-issue.md           ← Example zero-error fix command
 │   ├── skills/
 │   │   └── README.md              ← Guide: how to add skills
 │   ├── library/
@@ -105,10 +105,9 @@ your-project/
 ### 📂 File & Folder Guide
 
 - **`.aiignore`**: Prevents context pollution and saves tokens by hiding files (like `node_modules` or build outputs) from your AI agents.
-- **`commands/`**: Reusable prompt instructions that agents can execute on demand (e.g. `review.md`).
-- **`skills/`**: Skill definitions that teach agents how to behave in specific roles.
-- **`library/`**: Passive library documentation and API references.
-- **`rules/`**: Project-wide rules that all agents must follow strictly.
+- **`skills/`**: Active capabilities or specialised tasks that you trigger manually (e.g. `expo-create-app/`). Think of these as complex tools your agent can use when you ask it to.
+- **`library/`**: Passive documentation and API references for your installed packages. Generated automatically via `npx agentive install <pkg>`.
+- **`rules/`**: Passive, project-wide rules (e.g. `coding-standards.md`) that apply to everything the agent does.
 
 ### 🌟 Framework-Specific Guardrails
 
