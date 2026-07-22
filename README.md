@@ -73,6 +73,8 @@ These are the official, built-in skills available out-of-the-box when you scaffo
 | `agent-debug` | Base | An advanced, autonomous deep-system debugging skill that traces cross-file execution flows, researches library errors, checks git history, and guarantees zero-error root-cause fixes. |
 | `agent-grill` | Base | Audit architecture, logic, and docs to validate plans. |
 | `agent-learn` | Base | A meta-skill that acts as a Skill Architect, using web research and iterative "grill-me" interviews to generate robust AI skills. |
+| `agent-loop` | Base | Autonomous execution engine for continuous task completion with self-correction. |
+| `agent-plan` | Base | Requirements crystallizer that converts raw human intent into machine-ready specs. |
 | `agent-rule` | Base | Generate, update, and manage project-wide AI Rules across multiple IDE frameworks. |
 | `setup-docs-structure` | Base | Scaffolds a comprehensive, AI-optimized documentation directory using strict templates, index files, and exact project guidelines. |
 | `setup-route-groups` | Web & Mobile | Guidelines for enforcing the Route Groups pattern across modern file-based routing frameworks (Next.js, Expo Router, Nuxt). |
