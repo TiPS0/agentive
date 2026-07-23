@@ -45,9 +45,6 @@ async function createAgentDirectory(cwd, overwrite = false) {
   }
 
   await fs.mkdir(agentsDir, { recursive: true });
-  await fs.mkdir(path.join(agentsDir, 'skills'), { recursive: true });
-  await fs.mkdir(path.join(agentsDir, 'library'), { recursive: true });
-  await fs.mkdir(path.join(agentsDir, 'rules'), { recursive: true });
 
   return agentsDir;
 }
@@ -123,75 +120,75 @@ async function writeSettings(agentsDir, settings) {
  *
  * Replaces {{PROJECT_NAME}} and {{YEAR}} placeholders.
  *
- * @param {string} templatesDir - Absolute path to src/templates/
  * @param {string} agentsDir    - Absolute path to .agents/
  * @param {string} projectName  - The user's project name
  * @param {string} projectType  - e.g., 'general', 'web', 'mobile'
  * @param {string} framework    - e.g., 'expo', 'react-native'
  */
-async function copyTemplates(templatesDir, agentsDir, projectName, projectType = 'general', framework = null) {
+async function copyTemplates(agentsDir, projectName, projectType = 'general', framework = null) {
   const cwd = path.dirname(agentsDir);
+  const NAS_BASE_URL = process.env.AGENTIVE_API_URL || 'https://agentive.tipso.dev';
 
-  // 1. Copy AGENTS.md from base to project root
-  const agentMdSrc = path.join(templatesDir, 'base', 'AGENTS.md');
-  const targetAgentMdPath = path.join(cwd, 'AGENTS.md');
-  try {
-    let content = await fs.readFile(agentMdSrc, 'utf-8');
-    content = replacePlaceholders(content, projectName);
-    
-    let finalContent = content;
-    try {
-      const existingContent = await fs.readFile(targetAgentMdPath, 'utf-8');
-      if (existingContent.trim()) {
-        const syncText = 'Re-run `npx @p_tipso/agentive` any time to re-sync changes to your AI tools.';
-        const syncIndex = existingContent.indexOf(syncText);
-        
-        if (syncIndex !== -1) {
-          // Replace everything up to the sync text with the new base template
-          const customPart = existingContent.substring(syncIndex + syncText.length).trimStart();
-          finalContent = content + (customPart ? '\n\n' + customPart : '');
-        } else if (existingContent.includes('# Agent Instructions')) {
-          // The title exists but no sync text. Do not duplicate the title.
-          finalContent = existingContent;
-        } else {
-          // Prepend the new template content to the existing content
-          finalContent = content + '\n\n' + existingContent;
-        }
-      }
-    } catch { /* target may not exist, that's fine */ }
-
-    await fs.writeFile(targetAgentMdPath, finalContent, 'utf-8');
-  } catch { /* template may not exist */ }
-
-  // 1.5 Copy aiignore from base to project root as .aiignore
-  const aiignoreSrc = path.join(templatesDir, 'base', 'aiignore');
-  try {
-    let content = await fs.readFile(aiignoreSrc, 'utf-8');
-    await fs.writeFile(path.join(cwd, '.aiignore'), content, 'utf-8');
-  } catch { /* template may not exist */ }
-
-  const foldersToInclude = ['skills', 'rules', 'library'];
-
-  // Helper to copy a specific template layer
-  const copyLayer = async (layerPath) => {
-    for (const folder of foldersToInclude) {
-      const srcFolder = path.join(layerPath, folder);
-      const destFolder = path.join(agentsDir, folder);
-      try {
-        await fs.access(srcFolder);
-        await copyDirectoryRecursive(srcFolder, destFolder, projectName);
-      } catch {
-        continue;
-      }
-    }
-  };
-
-  // 2. Copy Base Layer
-  await copyLayer(path.join(templatesDir, 'base'));
-
-  // 3. Copy Framework Layer (if applicable)
+  let category = 'base';
   if (projectType !== 'general' && framework) {
-    await copyLayer(path.join(templatesDir, projectType, framework));
+    category = `${projectType}/${framework}`;
+  }
+
+  const exportUrl = `${NAS_BASE_URL}/v1/export?category=${category}`;
+
+  try {
+    const response = await fetch(exportUrl);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch from ${exportUrl}: ${response.statusText}`);
+    }
+    
+    const files = await response.json();
+
+    for (const [relativePath, rawContent] of Object.entries(files)) {
+      let content = rawContent;
+      let targetPath;
+
+      if (relativePath === 'AGENTS.md') {
+        targetPath = path.join(cwd, 'AGENTS.md');
+        content = replacePlaceholders(content, projectName);
+
+        // Append/Prepend logic for AGENTS.md
+        try {
+          const existingContent = await fs.readFile(targetPath, 'utf-8');
+          if (existingContent.trim()) {
+            const syncText = 'Re-run `npx @p_tipso/agentive` any time to re-sync changes to your AI tools.';
+            const syncIndex = existingContent.indexOf(syncText);
+            
+            if (syncIndex !== -1) {
+              const customPart = existingContent.substring(syncIndex + syncText.length).trimStart();
+              content = content + (customPart ? '\n\n' + customPart : '');
+            } else if (existingContent.includes('# Agent Instructions')) {
+              content = existingContent;
+            } else {
+              content = content + '\n\n' + existingContent;
+            }
+          }
+        } catch { /* target may not exist */ }
+      } else if (relativePath === '.aiignore' || relativePath === 'aiignore') {
+        targetPath = path.join(cwd, '.aiignore');
+      } else {
+        // This covers skills/, rules/, library/, etc.
+        // Remove leading slash if any to avoid path joining issues
+        const cleanRelativePath = relativePath.startsWith('/') ? relativePath.substring(1) : relativePath;
+        
+        // Remove base/ or category/ prefix if the backend accidentally included it in the keys.
+        // Wait, the backend log says keys are "AGENTS.md", "skills/agent-grill/SKILL.md". So they are already relative.
+        targetPath = path.join(agentsDir, cleanRelativePath);
+      }
+
+      // Ensure directory exists
+      await fs.mkdir(path.dirname(targetPath), { recursive: true });
+
+      // Write file
+      await fs.writeFile(targetPath, content, 'utf-8');
+    }
+  } catch (err) {
+    console.error('Warning: Failed to fetch templates from remote API:', err.message);
   }
 }
 
