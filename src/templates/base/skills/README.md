@@ -8,15 +8,15 @@ Each skill lives in its **own subfolder**, named after the skill. The folder mus
 
 ```
 .agents/skills/
-├── setup-route-groups/
+├── example-skill-a/
 │   └── SKILL.md
-├── create-expo-app/
+├── example-skill-b/
 │   └── SKILL.md
 └── my-custom-skill/
     └── SKILL.md
 ```
 
-IDE and CLI tools that support slash-commands will autocomplete the folder name, then load the `SKILL.md` inside it (e.g., typing `/setup-route-groups` activates that skill).
+IDE and CLI tools that support slash-commands will autocomplete the folder name, then load the `SKILL.md` inside it (e.g., typing `/my-custom-skill` activates that skill).
 
 ## SKILL.md Structure
 

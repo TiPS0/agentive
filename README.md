@@ -35,7 +35,7 @@ Stop maintaining separate rule files for every AI tool. **agentive** scaffolds a
 
 ## 📦 Installation & Usage
 
-Run one command to get a fully structured AI agent workspace instantly. 
+Run one command to get a fully structured AI agent workspace instantly.
 **Note for Users:** Always append `@latest` to ensure `npx` downloads the newest public release from the npm registry, avoiding any locally cached versions:
 
 ```bash
@@ -43,7 +43,6 @@ npx @p_tipso/agentive@latest
 ```
 
 > **Note for Contributors:** If you are testing this package locally (e.g., via `npm link`), simply run `npx @p_tipso/agentive` (without `@latest`) to execute your local codebase.
-
 
 If you prefer to install it globally for frequent usage:
 
@@ -59,6 +58,7 @@ agentive
 | `npx @p_tipso/agentive init`          | Scaffold `.agents/` workspace instantly in current directory              |
 | `npx @p_tipso/agentive install <pkg>` | Install an agent skill, library, or rule from the registry (alias: `add`) |
 | `npx @p_tipso/agentive remove <pkg>`  | Remove an installed skill, library, or rule (alias: `rm`)                 |
+| `npx @p_tipso/agentive sync`          | Sync and update physical `.agents/` files from the remote dataset         |
 | `npx @p_tipso/agentive --version`     | Print the current CLI version                                             |
 | `npx @p_tipso/agentive --help`        | Show available commands and options                                       |
 
@@ -68,18 +68,18 @@ agentive
 
 These are the official, built-in skills available out-of-the-box when you scaffold a workspace:
 
-| Skill Name | Category | Description |
-| :--- | :--- | :--- |
-| `agent-debug` | Base | An advanced, autonomous deep-system debugging skill that traces cross-file execution flows, researches library errors, checks git history, and guarantees zero-error root-cause fixes. |
-| `agent-grill` | Base | Audit architecture, logic, and docs to validate plans. |
-| `agent-learn` | Base | A meta-skill that acts as a Skill Architect, using web research and iterative "grill-me" interviews to generate robust AI skills. |
-| `agent-loop` | Base | Autonomous execution engine for continuous task completion with self-correction. |
-| `agent-plan` | Base | Requirements crystallizer that converts raw human intent into machine-ready specs. |
-| `agent-rule` | Base | Generate, update, and manage project-wide AI Rules across multiple IDE frameworks. |
-| `setup-docs-structure` | Base | Scaffolds a comprehensive, AI-optimized documentation directory using strict templates, index files, and exact project guidelines. |
-| `setup-route-groups` | Web & Mobile | Guidelines for enforcing the Route Groups pattern across modern file-based routing frameworks (Next.js, Expo Router, Nuxt). |
-| `expo-create-app` | Mobile > Expo | Guidelines for initiating a new modern Expo project using the latest templates and standards directly in the current directory. |
-| `expo-sdk-upgrade` | Mobile > Expo | Safely upgrade the local codebase's native wrappers and library versions to the targeted modern Expo SDK layout, resolve dependency conflicts, and auto-fix code errors. |
+| Skill Name             | Category      | Description                                                                                                                                                                            |
+| :--------------------- | :------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `agent-debug`          | Base          | An advanced, autonomous deep-system debugging skill that traces cross-file execution flows, researches library errors, checks git history, and guarantees zero-error root-cause fixes. |
+| `agent-grill`          | Base          | Audit architecture, logic, and docs to validate plans.                                                                                                                                 |
+| `agent-learn`          | Base          | A meta-skill that acts as a Skill Architect, using web research and iterative "grill-me" interviews to generate robust AI skills.                                                      |
+| `agent-loop`           | Base          | Autonomous execution engine for continuous task completion with self-correction.                                                                                                       |
+| `agent-plan`           | Base          | Requirements crystallizer that converts raw human intent into machine-ready specs.                                                                                                     |
+| `agent-rule`           | Base          | Generate, update, and manage project-wide AI Rules across multiple IDE frameworks.                                                                                                     |
+| `setup-docs-structure` | Base          | Scaffolds a comprehensive, AI-optimized documentation directory using strict templates, index files, and exact project guidelines.                                                     |
+| `setup-route-groups`   | Web & Mobile  | Guidelines for enforcing the Route Groups pattern across modern file-based routing frameworks (Next.js, Expo Router, Nuxt).                                                            |
+| `expo-create-app`      | Mobile > Expo | Guidelines for initiating a new modern Expo project using the latest templates and standards directly in the current directory.                                                        |
+| `expo-sdk-upgrade`     | Mobile > Expo | Safely upgrade the local codebase's native wrappers and library versions to the targeted modern Expo SDK layout, resolve dependency conflicts, and auto-fix code errors.               |
 
 ---
 
@@ -115,7 +115,13 @@ By selecting a specific framework (like **Expo**), `agentive` overlays expertly 
 
 ---
 
-## 🤝 Contributing
+### 📚 Developer Documentation
+
+For deep dives into the inner workings of Agentive, check out our [Developer Documentation (docs/)](./docs/README.md). This includes architecture decisions, CLI design notes, and feature specs that act as living documentation for both human contributors and AI agents.
+
+---
+
+### 🤝 Contributing
 
 We love contributions! Whether it's adding new built-in skills, fixing bugs, or improving documentation, your help is appreciated.
 
@@ -123,12 +129,12 @@ Please read our [Contributing Guide](CONTRIBUTING.md) to get started with settin
 
 ---
 
-## ⭐ Star History
+### ⭐ Star History
 
 [![Star History Chart](https://raw.githubusercontent.com/TiPS0/agentive/star-tracker-data/charts/star-history.svg)](https://star-history.com/#TiPS0/agentive&Date)
 
 ---
 
-## 📄 License
+### 📄 License
 
 This project is licensed under the [MIT License](./LICENSE).

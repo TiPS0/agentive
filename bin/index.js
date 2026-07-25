@@ -14,7 +14,7 @@ program
 
 program
   .command('init', { isDefault: true })
-  .description('Initialize a universal .agent/ workspace in your project')
+  .description('Initialize a universal .agents/ workspace in your project')
   .action(async () => {
     const { runInit } = require('../src/commands/init');
     await runInit();
@@ -36,6 +36,14 @@ program
   .action(async (packageName) => {
     const { runRemove } = require('../src/commands/remove');
     await runRemove(packageName);
+  });
+
+program
+  .command('sync')
+  .description('Sync and update physical .agents/ files from the remote dataset')
+  .action(async () => {
+    const { runSync } = require('../src/commands/sync');
+    await runSync();
   });
 
 program.parse(process.argv);

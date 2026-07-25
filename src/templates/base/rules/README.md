@@ -10,17 +10,9 @@ Each `.md` file in this directory defines a set of rules.
 > **Important Note for Agentive:**
 > Currently, the `agentive` CLI does not automatically merge these files into the root `AGENTS.md` file. Because AI Agents read the root `AGENTS.md` file for their global instructions, **creating a file here is not enough to activate it.**
 
-## How to Add New Rules (The Right Way)
+## How to Add New Rules
 
-To ensure your rule is instantly active, you should use the custom AI skill we built for this project:
-
-**Run this prompt in the AI chat:**
-`/agent-rule <explain the rule you want to enforce>`
-
-The AI will automatically:
-
-1. Format it correctly and save it in this directory.
-2. Automatically inject it into the root `AGENTS.md` file so it becomes active immediately.
+Simply create a new `.md` file in this directory and describe the constraints or guidelines for the project. Be sure to link or reference the file from your root `AGENTS.md` if your AI tool does not automatically crawl this directory.
 
 ## Structure
 

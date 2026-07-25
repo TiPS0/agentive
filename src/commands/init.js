@@ -46,19 +46,38 @@ async function runInit() {
   console.log('');
 
   // --- Prompt User for Project Type ---
-  let defaultProjectType = existingSettings?.projectType ? 
-    (existingSettings.projectType === 'general' ? 0 : (existingSettings.projectType === 'web' ? 1 : 2)) 
+  let defaultProjectType = existingSettings?.projectType ?
+    (existingSettings.projectType === 'general' ? 0 : (existingSettings.projectType === 'web' ? 1 : 2))
     : 0;
+
+  const localTemplatesDir = path.join(__dirname, '..', 'templates');
+  let isLocalMode = false;
+  let hasWeb = true;
+  let hasMobile = true;
+  try {
+    const fs = require('fs');
+    if (fs.existsSync(localTemplatesDir) && !process.env.AGENTIVE_API_URL) {
+      isLocalMode = true;
+      hasWeb = fs.existsSync(path.join(localTemplatesDir, 'web'));
+      hasMobile = fs.existsSync(path.join(localTemplatesDir, 'mobile'));
+    }
+  } catch (e) {}
+
+  let choices = [
+    { title: 'General / Universal', value: 'general' }
+  ];
+  if (!isLocalMode || hasWeb) {
+    choices.push({ title: 'Web Development', value: 'web' });
+  }
+  if (!isLocalMode || hasMobile) {
+    choices.push({ title: 'Mobile Development', value: 'mobile' });
+  }
 
   const typeResponse = await prompts({
     type: 'select',
     name: 'projectType',
     message: 'What type of project are you building?',
-    choices: [
-      { title: 'General / Universal', value: 'general' },
-      { title: 'Web Development', value: 'web' },
-      { title: 'Mobile Development', value: 'mobile' },
-    ],
+    choices,
     initial: defaultProjectType,
   });
 
@@ -69,10 +88,10 @@ async function runInit() {
 
   let framework = null;
   if (typeResponse.projectType === 'web') {
-    let defaultFramework = existingSettings?.framework ? 
-      (existingSettings.framework === 'nextjs' ? 0 : 1) 
+    let defaultFramework = existingSettings?.framework ?
+      (existingSettings.framework === 'nextjs' ? 0 : 1)
       : 0;
-      
+
     const fwResponse = await prompts({
       type: 'select',
       name: 'framework',
@@ -90,8 +109,8 @@ async function runInit() {
     }
     framework = fwResponse.framework;
   } else if (typeResponse.projectType === 'mobile') {
-    let defaultFramework = existingSettings?.framework ? 
-      (existingSettings.framework === 'expo' ? 0 : 1) 
+    let defaultFramework = existingSettings?.framework ?
+      (existingSettings.framework === 'expo' ? 0 : 1)
       : 0;
 
     const fwResponse = await prompts({
@@ -116,9 +135,8 @@ async function runInit() {
   console.log('');
 
   // --- Scaffold .agents/ directory ---
-  const templatesDir = path.join(__dirname, '..', 'templates');
   const agentsDir = await createAgentDirectory(cwd, false);
-  await copyTemplates(templatesDir, agentsDir, projectName, projectType, framework);
+  await copyTemplates(agentsDir, projectName, projectType, framework);
 
   // --- Write settings.json and settings.local.json ---
   await writeSettings(agentsDir, {
@@ -145,11 +163,9 @@ async function runInit() {
   console.log(chalk.gray('    .agents/'));
   console.log(chalk.gray('    ├── settings.json               ← project config'));
   console.log(chalk.gray('    ├── settings.local.json         ← local overrides (gitignored)'));
-  console.log(chalk.gray('    ├── skills/'));
-  console.log(chalk.gray('    ├── library/'));
-  console.log(chalk.gray('    └── rules/'));
-  console.log('');
-  console.log(chalk.gray('  Edit the markdown files to customise agent behaviour.'));
+  console.log(chalk.gray('    ├── skills/                     ← agent capabilities'));
+  console.log(chalk.gray('    ├── library/                    ← passive documentation'));
+  console.log(chalk.gray('    └── rules/                      ← project guidelines'));
   console.log('');
 }
 
