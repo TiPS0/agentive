@@ -112,6 +112,56 @@ async function writeSettings(agentsDir, settings) {
 
 // ─── Template Copying ─────────────────────────────────────────────────────────
 
+async function readAllPhysicalFiles(dirPath, baseDir = dirPath) {
+  const fileMap = new Map();
+  try {
+    const entries = await fs.readdir(dirPath, { withFileTypes: true });
+    for (const entry of entries) {
+      const fullPath = path.join(dirPath, entry.name);
+      if (entry.isDirectory()) {
+        const subMap = await readAllPhysicalFiles(fullPath, baseDir);
+        for (const [key, value] of subMap.entries()) {
+          fileMap.set(key, value);
+        }
+      } else if (entry.isFile()) {
+        let relPath = path.relative(baseDir, fullPath);
+        if (relPath === 'aiignore') relPath = '.aiignore';
+        
+        const content = await fs.readFile(fullPath, 'utf-8');
+        fileMap.set(relPath, content);
+      }
+    }
+  } catch (err) {
+    // Ignore missing directory
+  }
+  return fileMap;
+}
+
+async function getLocalExportPayload(templatesDir, categoryPath = '') {
+  const cleanCategory = (categoryPath || 'base').replace(/^\/+|\/+$/g, '');
+  const baseMap = await readAllPhysicalFiles(path.join(templatesDir, 'base'));
+  
+  try {
+    const rootFiles = await fs.readdir(templatesDir, { withFileTypes: true });
+    for (const entry of rootFiles) {
+      if (entry.isFile() && (entry.name === 'AGENTS.md' || entry.name.includes('aiignore'))) {
+        let content = await fs.readFile(path.join(templatesDir, entry.name), 'utf-8');
+        let name = entry.name;
+        if (name === 'aiignore') name = '.aiignore';
+        baseMap.set(name, content);
+      }
+    }
+  } catch(e) {}
+
+  if (cleanCategory && cleanCategory !== 'base') {
+    const targetMap = await readAllPhysicalFiles(path.join(templatesDir, cleanCategory));
+    for (const [relPath, content] of targetMap.entries()) {
+      baseMap.set(relPath, content);
+    }
+  }
+  return Object.fromEntries(baseMap);
+}
+
 /**
  * Copy template files from src/templates/ into the user's project.
  *
@@ -127,22 +177,35 @@ async function writeSettings(agentsDir, settings) {
  */
 async function copyTemplates(agentsDir, projectName, projectType = 'general', framework = null) {
   const cwd = path.dirname(agentsDir);
-  const NAS_BASE_URL = process.env.AGENTIVE_API_URL || 'https://agentive.tipso.dev';
-
+  
   let category = 'base';
   if (projectType !== 'general' && framework) {
     category = `${projectType}/${framework}`;
   }
 
-  const exportUrl = `${NAS_BASE_URL}/v1/export?category=${category}`;
+  const localTemplatesDir = path.join(__dirname, '..', 'templates');
+  let isLocalMode = false;
+  try {
+    const stat = await fs.stat(localTemplatesDir);
+    isLocalMode = stat.isDirectory();
+  } catch (err) {}
+
+  let files = {};
 
   try {
-    const response = await fetch(exportUrl);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch from ${exportUrl}: ${response.statusText}`);
+    if (isLocalMode && !process.env.AGENTIVE_API_URL) {
+      // Local contributor mode via npm link
+      files = await getLocalExportPayload(localTemplatesDir, category);
+    } else {
+      // Production or custom server mode
+      const NAS_BASE_URL = process.env.AGENTIVE_API_URL || 'https://agentive.tipso.dev';
+      const exportUrl = `${NAS_BASE_URL}/v1/export?category=${category}`;
+      const response = await fetch(exportUrl);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch from ${exportUrl}: ${response.statusText}`);
+      }
+      files = await response.json();
     }
-    
-    const files = await response.json();
 
     for (const [relativePath, rawContent] of Object.entries(files)) {
       let content = rawContent;

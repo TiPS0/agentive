@@ -50,15 +50,34 @@ async function runInit() {
     (existingSettings.projectType === 'general' ? 0 : (existingSettings.projectType === 'web' ? 1 : 2))
     : 0;
 
+  const localTemplatesDir = path.join(__dirname, '..', 'templates');
+  let isLocalMode = false;
+  let hasWeb = true;
+  let hasMobile = true;
+  try {
+    const fs = require('fs');
+    if (fs.existsSync(localTemplatesDir) && !process.env.AGENTIVE_API_URL) {
+      isLocalMode = true;
+      hasWeb = fs.existsSync(path.join(localTemplatesDir, 'web'));
+      hasMobile = fs.existsSync(path.join(localTemplatesDir, 'mobile'));
+    }
+  } catch (e) {}
+
+  let choices = [
+    { title: 'General / Universal', value: 'general' }
+  ];
+  if (!isLocalMode || hasWeb) {
+    choices.push({ title: 'Web Development', value: 'web' });
+  }
+  if (!isLocalMode || hasMobile) {
+    choices.push({ title: 'Mobile Development', value: 'mobile' });
+  }
+
   const typeResponse = await prompts({
     type: 'select',
     name: 'projectType',
     message: 'What type of project are you building?',
-    choices: [
-      { title: 'General / Universal', value: 'general' },
-      { title: 'Web Development', value: 'web' },
-      { title: 'Mobile Development', value: 'mobile' },
-    ],
+    choices,
     initial: defaultProjectType,
   });
 
