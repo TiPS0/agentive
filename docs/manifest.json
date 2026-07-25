@@ -1,0 +1,20 @@
+{
+  "documents": [
+    {
+      "path": "architecture/cli-design.md",
+      "description": "CLI Design and commander/prompts usage"
+    },
+    {
+      "path": "architecture/template-system.md",
+      "description": "Dynamic template resolution and merging"
+    },
+    {
+      "path": "features/init-command.md",
+      "description": "User flow and edge cases for the init command"
+    },
+    {
+      "path": "features/install-command.md",
+      "description": "User flow and logic for fetching and installing agent libraries"
+    }
+  ]
+}

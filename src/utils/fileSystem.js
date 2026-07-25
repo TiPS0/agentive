@@ -198,7 +198,7 @@ async function copyTemplates(agentsDir, projectName, projectType = 'general', fr
       files = await getLocalExportPayload(localTemplatesDir, category);
     } else {
       // Production or custom server mode
-      const NAS_BASE_URL = process.env.AGENTIVE_API_URL || 'https://agentive.tipso.dev';
+      const NAS_BASE_URL = process.env.AGENTIVE_API_URL || 'https://agentive-api.tipso.dev';
       const exportUrl = `${NAS_BASE_URL}/v1/export?category=${category}`;
       const response = await fetch(exportUrl);
       if (!response.ok) {
