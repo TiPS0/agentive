@@ -98,7 +98,14 @@ git checkout -b feat/your-feature-name
 # 3. Test the CLI locally
 npm link
 mkdir /tmp/agentive-test && cd /tmp/agentive-test
-agentive
+
+# To test with local template files (Default Local Mode)
+agentive init
+
+# To test with remote NAS API data (Remote Mode)
+agentive init --remote
+
+> **Note:** If you want to build your own custom API server and test it using `AGENTIVE_API_URL`, check out the [Custom API Specification](docs/api/nas-api-spec.md) to see the expected JSON responses.
 
 # 4. Push your branch
 git push -u origin feat/your-feature-name

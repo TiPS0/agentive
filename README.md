@@ -26,7 +26,7 @@ Stop maintaining separate rule files for every AI tool. **agentive** scaffolds a
 
 | Feature                       | Description                                                                    |
 | :---------------------------- | :----------------------------------------------------------------------------- |
-| 🚀 **Interactive Setup**      | Select your environment (General, Expo) to get tailored rules.                 |
+| 🚀 **Interactive Setup**      | Select your environment (General, Web, Mobile, Desktop) to get tailored rules. |
 | 🌍 **Universal**              | Framework-agnostic setup. Works with React, Python, Go, you name it.           |
 | 🧠 **Single Source of Truth** | Centralize skills, libraries, and rules for _all_ your AI agents in one place. |
 | ⚡ **Dynamic Layering**       | Scaffolds base rules and safely merges framework-specific guardrails.          |
@@ -85,7 +85,7 @@ These are the official, built-in skills available out-of-the-box when you scaffo
 
 ## 🏗 What Happens Under the Hood?
 
-When you run `agentive`, it launches an interactive wizard asking about your project environment (e.g., General, Mobile > Expo). It then intelligently scaffolds a tailored workspace:
+When you run `agentive`, it launches an interactive wizard asking about your project environment (e.g., General, Mobile > Expo, Desktop > Tauri). It then intelligently scaffolds a tailored workspace:
 
 ```text
 your-project/

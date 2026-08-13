@@ -175,7 +175,7 @@ async function getLocalExportPayload(templatesDir, categoryPath = '') {
  * @param {string} projectType  - e.g., 'general', 'web', 'mobile'
  * @param {string} framework    - e.g., 'expo', 'react-native'
  */
-async function copyTemplates(agentsDir, projectName, projectType = 'general', framework = null) {
+async function copyTemplates(agentsDir, projectName, projectType = 'general', framework = null, forceRemote = false) {
   const cwd = path.dirname(agentsDir);
   
   let category = 'base';
@@ -193,7 +193,7 @@ async function copyTemplates(agentsDir, projectName, projectType = 'general', fr
   let files = {};
 
   try {
-    if (isLocalMode && !process.env.AGENTIVE_API_URL) {
+    if (isLocalMode && !process.env.AGENTIVE_API_URL && !forceRemote) {
       // Local contributor mode via npm link
       files = await getLocalExportPayload(localTemplatesDir, category);
     } else {
