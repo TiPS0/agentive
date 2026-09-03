@@ -95,15 +95,36 @@ git checkout -b feat/your-feature-name
 
 # 2. Make your changes in the codebase
 
-# 3. Test the CLI locally
-npm link
-mkdir /tmp/agentive-test && cd /tmp/agentive-test
+# 3. Test the CLI
 
-# To test with local template files (Default Local Mode)
+You can test the CLI under different scenarios:
+
+### Testing Local Code (Default)
+To test the local repository code without any API calls (uses local templates):
+```bash
+# If you used `npm link`
 agentive init
 
-# To test with remote NAS API data (Remote Mode)
+# Or using node directly from the repository
+node bin/index.js init
+```
+
+### Testing Local Code + Remote API
+To force the local CLI to skip local templates and use the remote API (defaults to `https://agentive-api.tipso.dev`):
+```bash
 agentive init --remote
+```
+
+To test your local code against a **custom API URL**, you must pass the environment variable directly (since `.env` files are not automatically loaded by `npx` or `node` without flags):
+```bash
+AGENTIVE_API_URL="http://localhost:3000" node bin/index.js init --remote
+```
+
+### Testing the Public Package
+To ensure you are testing the latest version published to the NPM registry (ignoring any local code or cache):
+```bash
+npx --yes @p_tipso/agentive@latest init
+```
 
 > **Note:** If you want to build your own custom API server and test it using `AGENTIVE_API_URL`, check out the [Custom API Specification](docs/api/nas-api-spec.md) to see the expected JSON responses.
 

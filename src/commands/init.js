@@ -10,6 +10,7 @@ const {
   agentDirectoryExists,
   writeSettings,
   readSettings,
+  updateArchitectureRules,
 } = require('../utils/fileSystem');
 
 async function runInit(options = {}) {
@@ -105,8 +106,8 @@ async function runInit(options = {}) {
       const configRes = await fetch(`${NAS_BASE_URL}/v1/config`);
       if (configRes.ok) {
         const configData = await configRes.json();
-        console.log(chalk.yellow('  [DEBUG] Raw API Config Data:'));
-        console.log(chalk.gray(JSON.stringify(configData, null, 2)));
+        // console.log(chalk.yellow('  [DEBUG] Raw API Config Data:'));
+        // console.log(chalk.gray(JSON.stringify(configData, null, 2)));
         
         if (configData.projectTypes && Array.isArray(configData.projectTypes)) {
           for (const pt of configData.projectTypes) {
@@ -199,6 +200,7 @@ async function runInit(options = {}) {
   // --- Scaffold .agents/ directory ---
   const agentsDir = await createAgentDirectory(cwd, false);
   await copyTemplates(agentsDir, projectName, projectType, framework, options.remote);
+  await updateArchitectureRules(cwd);
 
   // --- Write settings.json and settings.local.json ---
   await writeSettings(agentsDir, {
