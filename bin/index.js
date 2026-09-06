@@ -15,9 +15,10 @@ program
 program
   .command('init', { isDefault: true })
   .description('Initialize a universal .agents/ workspace in your project')
-  .action(async () => {
+  .option('--remote', 'Force using templates from the remote API instead of local files')
+  .action(async (options) => {
     const { runInit } = require('../src/commands/init');
-    await runInit();
+    await runInit(options);
   });
 
 program

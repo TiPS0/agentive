@@ -26,7 +26,7 @@ Stop maintaining separate rule files for every AI tool. **agentive** scaffolds a
 
 | Feature                       | Description                                                                    |
 | :---------------------------- | :----------------------------------------------------------------------------- |
-| 🚀 **Interactive Setup**      | Select your environment (General, Expo) to get tailored rules.                 |
+| 🚀 **Interactive Setup**      | Select your environment (General, Web, Mobile, Desktop) to get tailored rules. |
 | 🌍 **Universal**              | Framework-agnostic setup. Works with React, Python, Go, you name it.           |
 | 🧠 **Single Source of Truth** | Centralize skills, libraries, and rules for _all_ your AI agents in one place. |
 | ⚡ **Dynamic Layering**       | Scaffolds base rules and safely merges framework-specific guardrails.          |
@@ -72,10 +72,12 @@ These are the official, built-in skills available out-of-the-box when you scaffo
 | :--------------------- | :------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `agent-debug`          | Base          | An advanced, autonomous deep-system debugging skill that traces cross-file execution flows, researches library errors, checks git history, and guarantees zero-error root-cause fixes. |
 | `agent-grill`          | Base          | Audit architecture, logic, and docs to validate plans.                                                                                                                                 |
-| `agent-learn`          | Base          | A meta-skill that acts as a Skill Architect, using web research and iterative "grill-me" interviews to generate robust AI skills.                                                      |
 | `agent-loop`           | Base          | Autonomous execution engine for continuous task completion with self-correction.                                                                                                       |
+| `agent-mcp`            | Base          | Install, configure, and iteratively test MCP servers in project mcp_config.json.                                                                                                       |
 | `agent-plan`           | Base          | Requirements crystallizer that converts raw human intent into machine-ready specs.                                                                                                     |
+| `agent-research`       | Base          | Research a topic (codebase, web, URL, or screenshot) and save a structured, AI-reusable document to docs/research/.                                                                    |
 | `agent-rule`           | Base          | Generate, update, and manage project-wide AI Rules across multiple IDE frameworks.                                                                                                     |
+| `agent-skill`          | Base          | Generate robust AI skills via iterative interview.                                                                                                                                     |
 | `setup-docs-structure` | Base          | Scaffolds a comprehensive, AI-optimized documentation directory using strict templates, index files, and exact project guidelines.                                                     |
 | `setup-route-groups`   | Web & Mobile  | Guidelines for enforcing the Route Groups pattern across modern file-based routing frameworks (Next.js, Expo Router, Nuxt).                                                            |
 | `expo-create-app`      | Mobile > Expo | Guidelines for initiating a new modern Expo project using the latest templates and standards directly in the current directory.                                                        |
@@ -85,7 +87,7 @@ These are the official, built-in skills available out-of-the-box when you scaffo
 
 ## 🏗 What Happens Under the Hood?
 
-When you run `agentive`, it launches an interactive wizard asking about your project environment (e.g., General, Mobile > Expo). It then intelligently scaffolds a tailored workspace:
+When you run `agentive`, it launches an interactive wizard asking about your project environment (e.g., General, Mobile > Expo, Desktop > Tauri). It then intelligently scaffolds a tailored workspace:
 
 ```text
 your-project/
@@ -94,6 +96,7 @@ your-project/
 ├── .agents/
 │   ├── settings.json              ← Project config
 │   ├── settings.local.json        ← Local machine overrides (auto-gitignored)
+│   ├── mcp_config.json            ← Project-specific MCP server connections
 │   ├── skills/
 │   │   └── README.md              ← Guide: how to add skills
 │   ├── library/
@@ -105,6 +108,7 @@ your-project/
 ### 📂 File & Folder Guide
 
 - **`.aiignore`**: Prevents context pollution and saves tokens by hiding files (like `node_modules` or build outputs) from your AI agents.
+- **`mcp_config.json`**: Connect local tools or context to your AI agent directly for this project via Model Context Protocol (MCP).
 - **`skills/`**: Active capabilities or specialised tasks that you trigger manually (e.g. `expo-create-app/`). Think of these as complex tools your agent can use when you ask it to.
 - **`library/`**: Passive documentation and API references for your installed packages. Generated automatically via `npx agentive install <pkg>`.
 - **`rules/`**: Passive, project-wide rules (e.g. `coding-standards.md`) that apply to everything the agent does.

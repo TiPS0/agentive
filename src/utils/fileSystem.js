@@ -95,6 +95,21 @@ async function writeSettings(agentsDir, settings) {
     );
   }
 
+  // mcp_config.json — waiting for client to insert the MCP connection
+  const mcpConfigPath = path.join(agentsDir, 'mcp_config.json');
+  try {
+    await fs.access(mcpConfigPath);
+  } catch {
+    const mcpConfigJson = {
+      mcpServers: {}
+    };
+    await fs.writeFile(
+      mcpConfigPath,
+      JSON.stringify(mcpConfigJson, null, 2) + '\n',
+      'utf-8'
+    );
+  }
+
   // Auto-append to .gitignore if it exists in cwd
   const cwd = path.dirname(agentsDir);
   const gitignorePath = path.join(cwd, '.gitignore');
@@ -175,7 +190,7 @@ async function getLocalExportPayload(templatesDir, categoryPath = '') {
  * @param {string} projectType  - e.g., 'general', 'web', 'mobile'
  * @param {string} framework    - e.g., 'expo', 'react-native'
  */
-async function copyTemplates(agentsDir, projectName, projectType = 'general', framework = null) {
+async function copyTemplates(agentsDir, projectName, projectType = 'general', framework = null, forceRemote = false) {
   const cwd = path.dirname(agentsDir);
   
   let category = 'base';
@@ -193,7 +208,7 @@ async function copyTemplates(agentsDir, projectName, projectType = 'general', fr
   let files = {};
 
   try {
-    if (isLocalMode && !process.env.AGENTIVE_API_URL) {
+    if (isLocalMode && !process.env.AGENTIVE_API_URL && !forceRemote) {
       // Local contributor mode via npm link
       files = await getLocalExportPayload(localTemplatesDir, category);
     } else {
@@ -467,6 +482,46 @@ async function removeLibraryFromReadme(agentsDir, packageName) {
   }
 }
 
+/**
+ * Update the Architecture Rules section in AGENTS.md based on the files in .agents/rules/
+ */
+async function updateArchitectureRules(cwd) {
+  const agentsMdPath = path.join(cwd, 'AGENTS.md');
+  const rulesDir = path.join(cwd, '.agents', 'rules');
+  
+  try {
+    let content = await fs.readFile(agentsMdPath, 'utf-8');
+    
+    let rulesList = '';
+    try {
+      const files = await fs.readdir(rulesDir, { withFileTypes: true });
+      const ruleFiles = files.filter(f => f.isFile() && f.name.endsWith('.md') && f.name.toLowerCase() !== 'readme.md');
+      
+      if (ruleFiles.length > 0) {
+        rulesList = ruleFiles.map(f => {
+          const ruleName = f.name.replace('.md', '');
+          return `- [${ruleName}](.agents/rules/${f.name})`;
+        }).join('\n');
+      }
+    } catch (err) {
+      // rules dir might not exist
+    }
+
+    const rulesBlock = `## Architecture Rules\n\n> **CRITICAL INSTRUCTION FOR AI:** You MUST use your file reading tools to read and memorize ALL of the rule files linked below BEFORE starting any work.\n${rulesList ? '\n' + rulesList : ''}`;
+
+    const blockRegex = /## Architecture Rules[\s\S]*?(?=\n## |$)/;
+    if (blockRegex.test(content)) {
+      content = content.replace(blockRegex, rulesBlock);
+    } else {
+      content = content.trimEnd() + '\n\n' + rulesBlock + '\n';
+    }
+
+    await fs.writeFile(agentsMdPath, content, 'utf-8');
+  } catch (err) {
+    // AGENTS.md might not exist
+  }
+}
+
 module.exports = {
   agentDirectoryExists,
   createAgentDirectory,
@@ -482,4 +537,5 @@ module.exports = {
   removeSkillFromReadme,
   updateLibraryReadme,
   removeLibraryFromReadme,
+  updateArchitectureRules,
 };

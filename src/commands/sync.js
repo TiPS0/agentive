@@ -5,7 +5,8 @@ const chalk = require('chalk');
 const {
   agentDirectoryExists,
   readSettings,
-  copyTemplates
+  copyTemplates,
+  updateArchitectureRules
 } = require('../utils/fileSystem');
 
 async function runSync() {
@@ -39,6 +40,7 @@ async function runSync() {
   try {
     // Re-run copyTemplates to download physical files and overwrite the local .agents
     await copyTemplates(agentsDir, projectName, projectType, framework);
+    await updateArchitectureRules(cwd);
     console.log('');
     console.log(chalk.green('  ✔ ') + 'Successfully synced physical dataset from the Agentive Server.');
     console.log(chalk.gray('  (Note: local modifications to skills/rules might have been overwritten)'));
