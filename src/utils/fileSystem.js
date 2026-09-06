@@ -95,6 +95,21 @@ async function writeSettings(agentsDir, settings) {
     );
   }
 
+  // mcp_config.json — waiting for client to insert the MCP connection
+  const mcpConfigPath = path.join(agentsDir, 'mcp_config.json');
+  try {
+    await fs.access(mcpConfigPath);
+  } catch {
+    const mcpConfigJson = {
+      mcpServers: {}
+    };
+    await fs.writeFile(
+      mcpConfigPath,
+      JSON.stringify(mcpConfigJson, null, 2) + '\n',
+      'utf-8'
+    );
+  }
+
   // Auto-append to .gitignore if it exists in cwd
   const cwd = path.dirname(agentsDir);
   const gitignorePath = path.join(cwd, '.gitignore');

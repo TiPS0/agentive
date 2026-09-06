@@ -227,6 +227,7 @@ async function runInit(options = {}) {
   console.log(chalk.gray('    .agents/'));
   console.log(chalk.gray('    ├── settings.json               ← project config'));
   console.log(chalk.gray('    ├── settings.local.json         ← local overrides (gitignored)'));
+  console.log(chalk.gray('    ├── mcp_config.json             ← mcp server connections'));
   console.log(chalk.gray('    ├── skills/                     ← agent capabilities'));
   console.log(chalk.gray('    ├── library/                    ← passive documentation'));
   console.log(chalk.gray('    └── rules/                      ← project guidelines'));
