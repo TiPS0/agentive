@@ -2,54 +2,6 @@
   "version": 1,
   "snapshots": [
     {
-      "timestamp": "2026-08-31T08:04:17.125Z",
-      "totalStars": 1,
-      "repos": [
-        {
-          "fullName": "TiPS0/agentive",
-          "name": "agentive",
-          "owner": "TiPS0",
-          "stars": 1
-        },
-        {
-          "fullName": "TiPS0/draftvo",
-          "name": "draftvo",
-          "owner": "TiPS0",
-          "stars": 0
-        },
-        {
-          "fullName": "TiPS0/expo-mobile",
-          "name": "expo-mobile",
-          "owner": "TiPS0",
-          "stars": 0
-        },
-        {
-          "fullName": "TiPS0/expo-starter",
-          "name": "expo-starter",
-          "owner": "TiPS0",
-          "stars": 0
-        },
-        {
-          "fullName": "TiPS0/mobile-server",
-          "name": "mobile-server",
-          "owner": "TiPS0",
-          "stars": 0
-        },
-        {
-          "fullName": "TiPS0/presentation-generator",
-          "name": "presentation-generator",
-          "owner": "TiPS0",
-          "stars": 0
-        },
-        {
-          "fullName": "TiPS0/TiPS0",
-          "name": "TiPS0",
-          "owner": "TiPS0",
-          "stars": 0
-        }
-      ]
-    },
-    {
       "timestamp": "2026-09-01T07:12:50.381Z",
       "totalStars": 1,
       "repos": [
@@ -1275,6 +1227,30 @@
     },
     {
       "timestamp": "2026-10-21T07:00:30.494Z",
+      "totalStars": 1,
+      "repos": [
+        {
+          "fullName": "TiPS0/agentive",
+          "name": "agentive",
+          "owner": "TiPS0",
+          "stars": 1
+        },
+        {
+          "fullName": "TiPS0/draftvo",
+          "name": "draftvo",
+          "owner": "TiPS0",
+          "stars": 0
+        },
+        {
+          "fullName": "TiPS0/TiPS0",
+          "name": "TiPS0",
+          "owner": "TiPS0",
+          "stars": 0
+        }
+      ]
+    },
+    {
+      "timestamp": "2026-10-22T07:02:32.745Z",
       "totalStars": 1,
       "repos": [
         {
