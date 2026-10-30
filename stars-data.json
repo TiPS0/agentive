@@ -2,30 +2,6 @@
   "version": 1,
   "snapshots": [
     {
-      "timestamp": "2026-09-08T06:53:12.252Z",
-      "totalStars": 1,
-      "repos": [
-        {
-          "fullName": "TiPS0/agentive",
-          "name": "agentive",
-          "owner": "TiPS0",
-          "stars": 1
-        },
-        {
-          "fullName": "TiPS0/draftvo",
-          "name": "draftvo",
-          "owner": "TiPS0",
-          "stars": 0
-        },
-        {
-          "fullName": "TiPS0/TiPS0",
-          "name": "TiPS0",
-          "owner": "TiPS0",
-          "stars": 0
-        }
-      ]
-    },
-    {
       "timestamp": "2026-09-09T07:02:12.076Z",
       "totalStars": 1,
       "repos": [
@@ -1227,6 +1203,30 @@
     },
     {
       "timestamp": "2026-10-29T07:58:58.709Z",
+      "totalStars": 1,
+      "repos": [
+        {
+          "fullName": "TiPS0/agentive",
+          "name": "agentive",
+          "owner": "TiPS0",
+          "stars": 1
+        },
+        {
+          "fullName": "TiPS0/draftvo",
+          "name": "draftvo",
+          "owner": "TiPS0",
+          "stars": 0
+        },
+        {
+          "fullName": "TiPS0/TiPS0",
+          "name": "TiPS0",
+          "owner": "TiPS0",
+          "stars": 0
+        }
+      ]
+    },
+    {
+      "timestamp": "2026-10-30T08:01:13.160Z",
       "totalStars": 1,
       "repos": [
         {
